@@ -18,7 +18,7 @@ class ProductController extends Controller
     {
         $products =  product::all();
         $sections = Section::all();
-        return view('section.section-products', compact(['products','sections']));
+        return view('section.section-products', compact(['products', 'sections']));
     }
 
     /**
@@ -84,7 +84,7 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
-        product::where('id','=',$request->id)->update([
+        product::where('id', '=', $request->id)->update([
             'product_name' => $request->product_name,
             'description' => $request->description,
             'section_id' => $request->section_id
@@ -102,9 +102,17 @@ class ProductController extends Controller
      */
     public function destroy(Request $request)
     {
-       $product =product::find($request->id);
-       $product->delete();
-       session()->flash('delete','تم حذف المنتج ');
-       return redirect('product');
+        $product = product::find($request->id);
+        $product->delete();
+        session()->flash('delete', 'تم حذف المنتج ');
+        return redirect('product');
+    }
+
+    public function getProduct($id)
+    {
+        $products = product::all()->where('section_id',  $id)->pluck('product_name','id');
+
+        //json for ajax
+        return json_encode( $products);// return responde()->josn($product);
     }
 }

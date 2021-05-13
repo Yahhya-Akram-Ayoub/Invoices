@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\InvoivesController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\InvoicesController;
+use App\Http\Controllers\InvoicesDetailsController;
+use App\Http\Controllers\InvoicesAttachmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +28,14 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::resource('/invoices', InvoivesController::class);
+Route::resource('/invoices', InvoicesController::class);
 Route::resource('/section', SectionController::class);
 Route::resource('/product',ProductController::class);
+Route::resource('/attachment',InvoicesAttachmentController::class);
+
+
+
+
+Route::post('/delete-attachment',[InvoicesAttachmentController::class , 'delete']);
+Route::get('/get_product/{id}',[ProductController::class , 'getProduct']);
+Route::get('/showInvoices/{id}',[InvoicesDetailsController::class , 'getDitails']);

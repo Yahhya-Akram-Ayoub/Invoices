@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoives;
+use App\Models\invoices_attachment;
 use Illuminate\Http\Request;
 
-class InvoivesController extends Controller
+class InvoicesAttachmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,6 @@ class InvoivesController extends Controller
      */
     public function index()
     {
-        return view('invoices.invoice');
     }
 
     /**
@@ -41,10 +40,10 @@ class InvoivesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Invoives  $invoives
+     * @param  \App\Models\invoices_attachment  $invoices_attachment
      * @return \Illuminate\Http\Response
      */
-    public function show(Invoives $invoives)
+    public function show(invoices_attachment $invoices_attachment)
     {
         //
     }
@@ -52,10 +51,10 @@ class InvoivesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Invoives  $invoives
+     * @param  \App\Models\invoices_attachment  $invoices_attachment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Invoives $invoives)
+    public function edit(invoices_attachment $invoices_attachment)
     {
         //
     }
@@ -64,10 +63,10 @@ class InvoivesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Invoives  $invoives
+     * @param  \App\Models\invoices_attachment  $invoices_attachment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Invoives $invoives)
+    public function update(Request $request, invoices_attachment $invoices_attachment)
     {
         //
     }
@@ -75,11 +74,16 @@ class InvoivesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Invoives  $invoives
+     * @param  \App\Models\invoices_attachment  $invoices_attachment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Invoives $invoives)
+    public function destroy(invoices_attachment $invoices_attachment)
     {
-        //
+        // كسف تشتنغل ؟؟؟؟؟؟؟؟
+    }
+    public function delete(Request $request)
+    {
+        invoices_attachment::find($request->id)->delete();
+        return back();
     }
 }
