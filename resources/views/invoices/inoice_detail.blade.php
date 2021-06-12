@@ -127,9 +127,27 @@
                     </div>
                     <div class="tab-pane" id="tab13">
                         <div class="col-xl-12">
+
+
+
+
+                            <form action="../add-attachment" method="POST" id="add_form" enctype="multipart/form-data">
+                                @csrf
+                                <div class="custom-file">
+                                    <input type="file" name="pic" id="pic" class="custom-file-input"
+                                        accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" />
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                    <input type="hidden" id="invoice_id" name="invoice_id" value="{{ $invoice->id }}">
+                                    <input type="hidden" id="invoice_number" name="invoice_number"
+                                        value="{{ $invoice->invoice_number }}">
+                                </div>
+                            </form>
+
+
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
+
                                         <table class="table table-striped mg-b-0 text-md-nowrap">
                                             <thead>
                                                 <th scope="col">م</th>
@@ -139,12 +157,12 @@
                                                 <th scope="col">العمليات</th>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    @php
-                                                        $x = 0;
-                                                    @endphp
-                                                    @foreach ($attachment as $item)
 
+                                                @php
+                                                    $x = 0;
+                                                @endphp
+                                                @foreach ($attachment as $item)
+                                                    <tr>
                                                         <th>{{ $x++ }}</th>
                                                         <th>{{ $item->file_name }}</th>
                                                         <th>{{ $item->Created_by }}</th>
@@ -154,14 +172,16 @@
                                                                 class="btn btn-outline-danger btn-sm" data-toggle="modal"
                                                                 data-target=".bd-example-modal-sm"
                                                                 data-attachment_id="{{ $item->id }}"
-                                                                data-file_name="{{ $item->file_name }}">حذف</button>
-                                                            <button type="button"
-                                                                class="btn btn-outline-primary btn-sm">تحميل</button>
-                                                            <button type="button"
-                                                                class="btn btn-outline-secondary btn-sm">عرض</button>
+                                                                data-file_name="{{ $item->file_name }}"
+                                                                data-invoice_number="{{ $item->invoice_number }}">حذف</button>
+                                                            <a type="button" class="btn btn-outline-secondary btn-sm"
+                                                                href="../download_file/{{ $item->invoice_number }}/{{ $item->file_name }}">تحميل</a>
+                                                            <a type="button" class="btn btn-outline-secondary btn-sm"
+                                                                href="../view_file/{{ $item->invoice_number }}/{{ $item->file_name }}">عرض</a>
                                                         </th>
-                                                    @endforeach
-                                                </tr>
+                                                    </tr>
+                                                @endforeach
+
 
                                             </tbody>
                                         </table>
@@ -195,6 +215,8 @@
 
                         <div class="modal-body">
                             <input type="text" class="form-control" readonly name="file_name" id="name_attchment_deleted">
+                            <input type="hidden" class="form-control" readonly name="invoive_number"
+                                id="invoive_number_deleted">
                             <input type="hidden" class="form-control" readonly name="id" id="id_attchment_deleted">
                         </div>
                         <div class="modal-footer">
@@ -215,34 +237,44 @@
 @endsection
 @section('js')
     <!-- Internal Data tables -->
-    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.dataTables.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.dataTables.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/pdfmake.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
-    <!--Internal  Datatable js -->
-    <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
+    <script??? src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}">
+        </script?? ?> <script
+            src="{{ URL::asset('assets/plugins/datatable/js/dataTables.dataTables.min.js') }}">
+        </script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.dataTables.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/pdfmake.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
+        <!--Internal  Datatable js -->
+        <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
 
 
-    <script>
-        $('#delete_modal').on('shown.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var file_name = button.data('file_name');
-            var id = button.data('attachment_id');
-            $('#name_attchment_deleted').val(file_name);
-            $('#id_attchment_deleted').val(id);
-        })
+        <script>
+            $('#delete_modal').on('shown.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var file_name = button.data('file_name');
+                var invoive_number = button.data('invoice_number');
+                var id = button.data('attachment_id');
+                $('#name_attchment_deleted').val(file_name);
+                $('#invoive_number_deleted').val(invoive_number);
+                $('#id_attchment_deleted').val(id);
+            })
 
-    </script>
-@endsection
+
+            $("#pic").on("change", function() {
+                document.getElementById("add_form").submit();
+                console.log('object :>> ');
+            });
+
+        </script>
+    @endsection

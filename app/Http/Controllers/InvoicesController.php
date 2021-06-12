@@ -8,6 +8,7 @@ use App\Models\invoices_attachment;
 use Illuminate\Http\Request;
 use App\Models\invoices_details;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class invoicesController extends Controller
 {
@@ -19,7 +20,7 @@ class invoicesController extends Controller
     public function index()
     {
         $invoices = invoices::all();
-        return view('invoices.invoice' ,compact('invoices'));
+        return view('invoices.invoice', compact('invoices'));
     }
 
     /**
@@ -74,19 +75,8 @@ class invoicesController extends Controller
 
 
         if ($request->hasFile('pic')) {
-
-            $fileName =  $request->file('pic')->getClientOriginalName();
-            $invoice_number =  $request->invoice_number;
-            invoices_attachment::create(
-                [
-                    'file_name' =>    $fileName,
-                    'invoice_number' => $invoice_number,
-                    'Created_by' => Auth::user()->name,
-                    'invoice_id' => $invoice_id
-                ]
-            );
-
-            $request->pic->move(public_path('Attachments/' . $invoice_number), $fileName);
+            $request->invoice_id = $invoice_id;
+            $this->addAttachment($request);
         }
 
         session()->flash('Add', 'تم اضافة الفاتورة بنجاح');
@@ -110,9 +100,9 @@ class invoicesController extends Controller
      * @param  \App\Models\invoices  $invoices
      * @return \Illuminate\Http\Response
      */
-    public function edit(invoices $invoices)
+    public function edit($invoices)
     {
-        //
+        return $invoices;
     }
 
     /**
@@ -122,9 +112,26 @@ class invoicesController extends Controller
      * @param  \App\Models\invoices  $invoices
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, invoices $invoices)
+    public function update(Request $request)
     {
-        //
+        invoices::where('id', $request->id)->update([
+            'invoice_number' => $request->invoice_number,
+            'invoive_date' => $request->invoice_Date,
+            'due_date' => $request->Due_date,
+            'product_id' => $request->product,
+            'section_id' => $request->Section,
+            'amount_collection' => $request->Amount_collection,
+            'amount_commission' => $request->Amount_Commission,
+            'discount' => $request->Discount,
+            'value_vat' => $request->Value_VAT,
+            'rate_vat' => $request->Rate_VAT,
+            'total' => $request->Total,
+            'value_status' => 2,
+            'note' => $request->note,
+            'user_id' => Auth::user()->id
+        ]);
+
+        return back();
     }
 
     /**
@@ -133,8 +140,52 @@ class invoicesController extends Controller
      * @param  \App\Models\invoices  $invoices
      * @return \Illuminate\Http\Response
      */
-    public function destroy(invoices $invoices)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->invoice_id;
+        $invoice = invoices::findOrFail($id)->delete();
+
+        //نحذف المرفقات قبل الفاتورة عشان نقدر نوصل للملف تبعهم لان بس حذفن الفاتورة رح ينحذف المرفقات واسماء الملفات
+        // $attachment = invoices_attachment::where('invoice_id', $id)->get();
+        $attachment = invoices_attachment::where('invoice_id', $id)->first();
+
+        if (isset($attachment)) {
+
+            // foreach ($attachment as $item) {
+            // Storage::disk('public_uploads')->deleteDirectory($item->invoice_number);
+            Storage::disk('public_uploads')->deleteDirectory( $attachment->invoice_number);
+            // }
+        }
+        $invoice = invoices::where('id',  $id);
+        $invoice->delete();
+        session()->flash('delete_invoice');
+        return back();
+    }
+
+
+
+    public function addAttachment(Request $request)
+    {
+
+        if ($request->hasFile('pic')) {
+
+            $request->validate([
+                'pic' => 'mimes:pdf,jpeg,png,jpg',
+            ]);
+
+            $fileName =  $request->file('pic')->getClientOriginalName();
+            $invoice_number =  $request->invoice_number;
+            invoices_attachment::create(
+                [
+                    'file_name' =>    $fileName,
+                    'invoice_number' => $invoice_number,
+                    'Created_by' => Auth::user()->name,
+                    'invoice_id' => $request->invoice_id
+                ]
+            );
+
+            $request->pic->move(public_path('Attachments/' . $invoice_number), $fileName);
+        }
+        return back();
     }
 }

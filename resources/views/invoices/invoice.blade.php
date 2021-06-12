@@ -7,6 +7,8 @@
     <link href="{{ URL::asset('assets/plugins/datatable/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/datatable/css/responsive.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
+    <!--Internal   Notify -->
+    <link href="{{ URL::asset('assets/plugins/notify/css/notifIt.css') }}" rel="stylesheet" />
 @endsection
 
 @section('title')
@@ -14,6 +16,17 @@
 @stop
 
 @section('page-header')
+    <!--notfication-->
+    @if (session()->has('delete_invoice'))
+        <script>
+            window.onload = function(){
+                notif({
+                    msg:"تم حذف الفاتورة بنجاح",
+                    type:"warning"
+                })
+            }
+        </script>
+    @endif
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
@@ -81,7 +94,7 @@
                                     <th class="border-bottom-0">الخصم</th>
                                     <th class="border-bottom-0">الاجمالي</th>
                                     <th class="border-bottom-0">الحالة</th>
-                                    <th class="border-bottom-0">عرض</th>
+                                    <th class="border-bottom-0">العمليات</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,15 +105,38 @@
 
                                     <tr>
                                         <th class="border-bottom-0">{{ $count++ }}</th>
-                                        <th class="border-bottom-0">{{  $i->invoice_number}}</th>
-                                        <th class="border-bottom-0">{{  $i->invoive_date}}</th>
-                                        <th class="border-bottom-0">{{  $i->due_date}}</th>
-                                        <th class="border-bottom-0">{{  $i->product_id}}</th>
-                                        <th class="border-bottom-0">{{  $i->section_id}}</th>
-                                        <th class="border-bottom-0">{{  $i->discount}}</th>
-                                        <th class="border-bottom-0">{{  $i->total}}</th>
-                                        <th class="border-bottom-0">{{  $i->status}}</th>
-                                        <th class="border-bottom-0"><a href="showInvoices/{{$i->id}}" class="btn btn-primary btn-icon"><i class="typcn typcn-arrow-back-outline"></i></a></th>
+                                        <th class="border-bottom-0">{{ $i->invoice_number }}</th>
+                                        <th class="border-bottom-0">{{ $i->invoive_date }}</th>
+                                        <th class="border-bottom-0">{{ $i->due_date }}</th>
+                                        <th class="border-bottom-0">{{ $i->product_id }}</th>
+                                        <th class="border-bottom-0">{{ $i->section_id }}</th>
+                                        <th class="border-bottom-0">{{ $i->discount }}</th>
+                                        <th class="border-bottom-0">{{ $i->total }}</th>
+                                        <th class="border-bottom-0">{{ $i->status }}</th>
+                                        {{-- <th class="border-bottom-0"></th> --}}
+                                        <th>
+                                            <!-- Example single danger button -->
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-success dropdown-toggle"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    العمليات
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a href="showInvoices/{{ $i->id }}" class=" dropdown-item"><i
+                                                            class=" typcn typcn-arrow-back-outline"></i>
+                                                        عرض</a>
+                                                    <a href="edit/{{ $i->id }}" class=" dropdown-item"><i
+                                                            class=" typcn typcn-arrow-back-outline"></i>
+                                                        تعديل</a>
+                                                    <a class="dropdown-item" id="delete_btn_id" name="delete_btn_id"
+                                                        data-toggle="modal" data-target="#deleteModal"
+                                                        data-id={{ $i->id }}><i
+                                                            class=" typcn typcn-arrow-back-outline"></i>
+                                                        حذف</a>
+
+                                                </div>
+                                            </div>
+                                        </th>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -111,6 +147,32 @@
         </div>
         <!--/div-->
 
+
+
+        <!-- delete -->
+        <div class="modal" id="deleteModal">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content modal-content-demo">
+                    <div class="modal-header">
+                        <h6 class="modal-title">حذف المنتج</h6><button aria-label="Close" class="close" data-dismiss="modal"
+                            type="button"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <form action="invoices/destroy" method="post">
+                        {{ method_field('delete') }}
+                        {{ csrf_field() }}
+                        <div class="modal-body">
+                            <p>هل انت متاكد من عملية الحذف ؟</p><br>
+
+                            <input class="form-control" name="invoice_id" id="invoice_id" type="text" readonly hidden>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                            <button type="submit" class="btn btn-danger">تاكيد</button>
+                        </div>
+                </div>
+                </form>
+            </div>
+        </div>
 
 
     </div>
@@ -178,9 +240,7 @@
         </div>
         <!--/div-->
 
-
-    </div>
-    <!-- /row -->
+        <!-- /row -->
     </div>
     <!-- Container closed -->
     </div>
@@ -206,4 +266,15 @@
     <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
     <!--Internal  Datatable js -->
     <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
+    <!--Internal  Notify js -->
+    <script src="{{ URL::asset('assets/plugins/notify/js/notifIt.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/notify/js/notifit-custom.js') }}"></script>
+    <script>
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            $('#invoice_id').val(id);
+        });
+
+    </script>
 @endsection

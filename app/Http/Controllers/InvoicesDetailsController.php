@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\invoices;
 use App\Models\invoices_attachment;
 use App\Models\invoices_details;
+use App\Models\Section;
 use Illuminate\Http\Request;
 
 class InvoicesDetailsController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -46,9 +48,15 @@ class InvoicesDetailsController extends Controller
      * @param  \App\Models\invoices_details  $invoices_details
      * @return \Illuminate\Http\Response
      */
-    public function show(invoices_details $invoices_details)
+    public function show($id)
     {
-        //
+
+        $result =  $this->getDitails($id);
+        $invoice = $result[0];
+        $attachment = $result[1];
+        $details = $result[2];
+
+        return view('invoices.inoice_detail', compact('invoice', 'attachment', 'details'));
     }
 
     /**
@@ -57,9 +65,14 @@ class InvoicesDetailsController extends Controller
      * @param  \App\Models\invoices_details  $invoices_details
      * @return \Illuminate\Http\Response
      */
-    public function edit(invoices_details $invoices_details)
+    public function edit($id)
     {
-        //
+        $result =  $this->getDitails($id);
+        $invoice = $result[0];
+        $attachment = $result[1];
+        $details = $result[2];
+        $sections = Section::all();
+        return view('invoices.edit_invoice', compact('invoice', 'attachment', 'details','sections'));
     }
 
     /**
@@ -91,13 +104,14 @@ class InvoicesDetailsController extends Controller
         // عدله ا عالعلاقات
         $invoice = invoices::find($id);
         $attachment = invoices_attachment::where('invoice_id', '=', $id)->get();
-        $details = invoices_details::where('invoice_id',$id)->first();
+        $details = invoices_details::where('invoice_id', $id)->first();
 
 
         foreach ($attachment as $att) {
             $att->create_date =  $att->created_at->format('d/m/Y');
         }
 
-        return view('invoices.inoice_detail', compact('invoice', 'attachment','details'));
+        $result =  [$invoice, $attachment, $details];
+        return $result;
     }
 }

@@ -21,7 +21,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الفواتير</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    اضافة فاتورة</span>
+                    تعديل فاتورة</span>
             </div>
         </div>
     </div>
@@ -44,28 +44,30 @@
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('invoices.store') }}" method="post" enctype="multipart/form-data"
+                    <form action="invoices/update " method="post" enctype="multipart/form-data"
                         autocomplete="off">
                         {{ csrf_field() }}
                         {{-- 1 --}}
 
+                        <input type="text" value="{{$invoice->id}}" name="id" hidden>
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">رقم الفاتورة</label>
                                 <input type="text" class="form-control" id="inputName" name="invoice_number"
-                                    title="يرجي ادخال رقم الفاتورة" required>
+                                    value="{{ $invoice->invoice_number }}" title="يرجي ادخال رقم الفاتورة" required>
                             </div>
 
                             <div class="col">
                                 <label>تاريخ الفاتورة</label>
                                 <input class="form-control fc-datepicker" name="invoice_Date" placeholder="YYYY-MM-DD"
-                                    type="text" value="{{ date('Y-m-d') }}" required>
+                                    value="{{ $invoice->invoive_date }}" type="text" value="{{ date('Y-m-d') }}"
+                                    required>
                             </div>
 
                             <div class="col">
                                 <label>تاريخ الاستحقاق</label>
                                 <input class="form-control fc-datepicker" name="Due_date" placeholder="YYYY-MM-DD"
-                                    type="date" required>
+                                    value="{{ $invoice->due_date }}" type="date" required>
                             </div>
 
                         </div>
@@ -78,7 +80,9 @@
                                     <!--placeholder-->
                                     <option value="" selected disabled>حدد القسم</option>
                                     @foreach ($sections as $section)
-                                        <option value="{{ $section->id }}"> {{ $section->section_name }}</option>
+                                        <option value="{{ $section->id }}"
+                                            {{ $section->id == $invoice->section_id ? 'selected' : '' }}>
+                                            {{ $section->section_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -92,6 +96,7 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ التحصيل</label>
                                 <input type="text" class="form-control" id="inputName2" name="Amount_collection"
+                                    value="{{ $invoice->amount_collection }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                             </div>
                         </div>
@@ -104,7 +109,8 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ العمولة</label>
                                 <input type="text" class="form-control form-control-lg" id="Amount_Commission"
-                                    name="Amount_Commission" title="يرجي ادخال مبلغ العمولة "
+                                    value="{{ $invoice->amount_collection }}" name="amount_commission"
+                                    title="يرجي ادخال مبلغ العمولة "
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                     required>
                             </div>
@@ -112,7 +118,7 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">الخصم</label>
                                 <input type="text" class="form-control form-control-lg" id="Discount" name="Discount"
-                                    title="يرجي ادخال مبلغ الخصم "
+                                    title="يرجي ادخال مبلغ الخصم " value="{{ $invoice->discount }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                     value=0 required>
                             </div>
@@ -122,8 +128,8 @@
                                 <select name="Rate_VAT" id="Rate_VAT" class="form-control" onchange="myFunction()">
                                     <!--placeholder-->
                                     <option value="" selected disabled>حدد نسبة الضريبة</option>
-                                    <option value=" 5%">5%</option>
-                                    <option value="10%">10%</option>
+                                    <option value="5%" {{ $invoice->rate_vat == '5%' ? 'selected' : '' }}>5%</option>
+                                    <option value="10%" {{ $invoice->rate_vat == '10%' ? 'selected' : '' }}>10%</option>
                                 </select>
                             </div>
 
@@ -147,17 +153,66 @@
                         <div class="row">
                             <div class="col">
                                 <label for="exampleTextarea">ملاحظات</label>
-                                <textarea class="form-control" id="exampleTextarea" name="note" rows="3"></textarea>
+                                <textarea class="form-control" id="exampleTextarea" name="note"
+                                    rows="3">{{ $invoice->note }}</textarea>
                             </div>
                         </div><br>
 
                         <p class="text-danger">* صيغة المرفق pdf, jpeg ,.jpg , png </p>
                         <h5 class="card-title">المرفقات</h5>
 
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+
+                                    <table id="attachment_table"class="table table-striped mg-b-0 text-md-nowrap">
+                                        <thead>
+                                            <th scope="col">م</th>
+                                            <th scope="col">اسم الملف</th>
+                                            <th scope="col">قام بالاضافة</th>
+                                            <th scope="col">تاريخ الاضافة</th>
+                                            <th scope="col">العمليات</th>
+                                        </thead>
+                                        <tbody>
+
+                                            @php
+                                                $x = 0;
+                                            @endphp
+                                            @foreach ($attachment as $item)
+                                                <tr >
+                                                    <th>{{ $x++ }}</th>
+                                                    <th>{{ $item->file_name }}</th>
+                                                    <th>{{ $item->Created_by }}</th>
+                                                    <th>{{ $item->create_date }}</th>
+                                                    <th>
+                                                        <button type="button" name="delete" id="btn-delete"
+                                                            class="btn btn-outline-danger btn-sm" data-toggle="modal"
+                                                            data-target=".bd-example-modal-sm"
+                                                            data-attachment_id="{{ $item->id }}"
+                                                            data-file_name="{{ $item->file_name }}"
+                                                            data-invoice_number="{{ $item->invoice_number }}">حذف</button>
+                                                        <a type="button" class="btn btn-outline-secondary btn-sm"
+                                                            href="../download_file/{{ $item->invoice_number }}/{{ $item->file_name }}">تحميل</a>
+                                                        <a type="button" class="btn btn-outline-secondary btn-sm"
+                                                            href="../view_file/{{ $item->invoice_number }}/{{ $item->file_name }}">عرض</a>
+                                                    </th>
+                                                </tr>
+                                            @endforeach
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-12 col-md-12">
-                            <input type="file" name="pic" class="dropify" accept=".pdf,.jpg, .png, image/jpeg, image/png"
-                                data-height="70" />
+                            <button type="button" class="btn btn-primary"
+                                onclick="document.getElementById('pic').click()">اضافة ملف</button>
+                            <input type="file" name="pic" id="pic" style="display:none" class="dropify"
+                                accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" />
                         </div><br>
+
 
                         <div class="d-flex justify-content-center">
                             <button type="submit" class="btn btn-primary">حفظ البيانات</button>
@@ -210,32 +265,34 @@
 
 
     <script>
+        function getSections() {
+            var section_id = $(this).val();
+
+            if (section_id) {
+
+                $.ajax({
+                    url: "../get_product/" + section_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
+                        $('select[name="product"]').empty();
+                        $.each(data, function(key, value) {
+                            $('select[name="product"]').append(' <option value="' +
+                                value + '"> ' + value + '</option>');
+
+                        });
+                    },
+                });
+            } else {
+                console.log('error loading ajax');
+            }
+        }
+
         $(document).ready(function() {
-            $('select[name="Section"]').on('change', function() {
-                var section_id = $(this).val();
-
-                if (section_id) {
-
-                    $.ajax({
-                        url: "../get_product/" + section_id,
-                        type: "GET",
-                        dataType: "json",
-                        success: function(data) {
-                            console.log(data);
-                            $('select[name="product"]').empty();
-                            $.each(data, function(key, value) {
-                                $('select[name="product"]').append(' <option value="' +
-                                    value + '"> ' + value + '</option>');
-
-                            });
-                        },
-                    });
-                } else {
-                    console.log('error loading ajax');
-                }
-            });
-
+            $('select[name="Section"]').change(getSections).change();
         });
+        getSections();
 
     </script>
 
@@ -258,6 +315,27 @@
                 document.getElementById("Total").value = sumt;
             }
         }
+        myFunction();
+
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#pic').on('change', function() {
+
+ //// صع نفس زر الاضافة الي عند المرفقات وريح راسك
+                const fileList = document.getElementById("pic").value;
+                console.log(fileList);
+                alert(fileList);
+                console.log('fileList');
+
+                    $('#attachment_table').append(
+                        '<tr><th>{{ $x++ }}</th><th>{{ $item->file_name }}</th><th>{{ $item->Created_by }}</th><th>{{ $item->create_date }}</th><th></th></tr>'
+                    );
+
+
+            });
+        });
 
     </script>
 

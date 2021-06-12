@@ -38,4 +38,11 @@ Route::resource('/attachment',InvoicesAttachmentController::class);
 
 Route::post('/delete-attachment',[InvoicesAttachmentController::class , 'delete']);
 Route::get('/get_product/{id}',[ProductController::class , 'getProduct']);
-Route::get('/showInvoices/{id}',[InvoicesDetailsController::class , 'getDitails']);
+Route::get('/showInvoices/{id}',[InvoicesDetailsController::class , 'show']);
+Route::get('/edit/{id}',[InvoicesDetailsController::class , 'edit']);
+Route::post('/add-attachment',[InvoicesController::class , 'addAttachment']);
+
+
+
+Route::get('/view_file/{invoice_number}/{attachment_name}',[InvoicesAttachmentController::class , 'show']);
+Route::get('/download_file/{invoice_number}/{attachment_name}',[InvoicesAttachmentController::class , 'download']);

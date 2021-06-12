@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\invoices_attachment;
 use Illuminate\Http\Request;
+use App\Models\invoices_attachment;
+use Illuminate\Support\Facades\Storage;
 
 class InvoicesAttachmentController extends Controller
 {
@@ -43,9 +44,11 @@ class InvoicesAttachmentController extends Controller
      * @param  \App\Models\invoices_attachment  $invoices_attachment
      * @return \Illuminate\Http\Response
      */
-    public function show(invoices_attachment $invoices_attachment)
+    public function show( $invoice_number,$attachment_name )
     {
-        //
+
+        $file = Storage::disk('public_uploads')->getDriver()->getAdapter()->applyPathPrefix($invoice_number.'\\'.$attachment_name);
+        return response()->file($file);
     }
 
     /**
@@ -79,11 +82,21 @@ class InvoicesAttachmentController extends Controller
      */
     public function destroy(invoices_attachment $invoices_attachment)
     {
-        // كسف تشتنغل ؟؟؟؟؟؟؟؟
+        // كيف تشتنغل ؟؟؟؟؟؟؟؟
     }
+
+
     public function delete(Request $request)
     {
+        Storage::disk('public_uploads')->delete($request->invoive_number.'\\'.$request->file_name);
         invoices_attachment::find($request->id)->delete();
+        session()->flash('delete', 'تم حذف المرفق بنجاح');
         return back();
+    }
+
+    public function download( $invoice_number,$attachment_name )
+    {
+        $file = Storage::disk('public_uploads')->getDriver()->getAdapter()->applyPathPrefix($invoice_number.'\\'.$attachment_name);
+        return  response()->download($file);
     }
 }
