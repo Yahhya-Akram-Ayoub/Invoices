@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InvoiceExport;
 use App\Models\Section;
 use App\Models\invoices;
-use App\Models\invoices_attachment;
 use Illuminate\Http\Request;
 use App\Models\invoices_details;
+use App\Notifications\addInvoice;
+use App\Models\invoices_attachment;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Notification;
 
 class invoicesController extends Controller
 {
@@ -68,6 +72,7 @@ class invoicesController extends Controller
             'section' => $request->Section,
             'status' => 'غير مدفوعة',
             'value_status' => 2,
+            'amount_paid' => 0,
             'note' => $request->note,
             'user' => (Auth::user()->name),
         ]);
@@ -78,7 +83,7 @@ class invoicesController extends Controller
             $request->invoice_id = $invoice_id;
             $this->addAttachment($request);
         }
-
+        Notification::send(Auth::user(), new addInvoice($invoice_id));
         session()->flash('Add', 'تم اضافة الفاتورة بنجاح');
         return back();
     }
@@ -143,22 +148,27 @@ class invoicesController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->invoice_id;
-        $invoice = invoices::findOrFail($id)->delete();
+        $page_id = $request->page_id;
 
-        //نحذف المرفقات قبل الفاتورة عشان نقدر نوصل للملف تبعهم لان بس حذفن الفاتورة رح ينحذف المرفقات واسماء الملفات
-        // $attachment = invoices_attachment::where('invoice_id', $id)->get();
-        $attachment = invoices_attachment::where('invoice_id', $id)->first();
+        $invoice = invoices::where('id', $id)->first();
+        if ($page_id == 1) {
+            //نحذف المرفقات قبل الفاتورة عشان نقدر نوصل للملف تبعهم لان بس حذفن الفاتورة رح ينحذف المرفقات واسماء الملفات
+            // $attachment = invoices_attachment::where('invoice_id', $id)->get();
+            $attachment = invoices_attachment::where('invoice_id', $id)->first();
+            if (isset($attachment)) {
 
-        if (isset($attachment)) {
+                // foreach ($attachment as $item) {
+                // Storage::disk('public_uploads')->deleteDirectory($item->invoice_number);
+                Storage::disk('public_uploads')->deleteDirectory($attachment->invoice_number);
+                // }
+            }
 
-            // foreach ($attachment as $item) {
-            // Storage::disk('public_uploads')->deleteDirectory($item->invoice_number);
-            Storage::disk('public_uploads')->deleteDirectory( $attachment->invoice_number);
-            // }
+            $invoice->forceDelete();
+            session()->flash('delete_invoice');
+        } else {
+            $invoice->delete();
+            session()->flash('archived_invoice');
         }
-        $invoice = invoices::where('id',  $id);
-        $invoice->delete();
-        session()->flash('delete_invoice');
         return back();
     }
 
@@ -187,5 +197,71 @@ class invoicesController extends Controller
             $request->pic->move(public_path('Attachments/' . $invoice_number), $fileName);
         }
         return back();
+    }
+
+
+    public function updateDetails(Request $request)
+    {
+
+        invoices_details::create([
+            'invoice_id' => $request->id,
+            'invoice_number' => $request->invoice_number,
+            'product' => $request->product,
+            'section' => $request->Section,
+            'status' => 'غير مدفوعة',
+            'value_status' => 2,
+            'amount_paid' => $request->amount_paid,
+            'note' => $request->note,
+            'user' => (Auth::user()->name),
+        ]);
+
+        return back();
+    }
+
+    public function invoices_paid()
+    {
+        $invoices = invoices::where('value_status', 2)->get();
+        return view('invoices.invoices_paid', compact('invoices'));
+    }
+    public function invoices_unpaid()
+    {
+        $invoices = invoices::where('value_status', 0)->get();
+        return view('invoices.invoices_unpaid', compact('invoices'));
+    }
+    public function invoices_partially_paid()
+    {
+        $invoices = invoices::where('value_status', 1)->get();
+        return view('invoices.invoices_partially_paid', compact('invoices'));
+    }
+    public function archived_invoiced()
+    {
+        $invoices = invoices::onlyTrashed()->get();
+        return view('invoices.archived_invoiced', compact('invoices'));
+    }
+    public function restore(Request $request)
+    {
+        $id = $request->invoice_id;
+        $invoice = invoices::withTrashed()->where('id', $id)->restore();
+        session()->flash('restore');
+        return back();
+    }
+    public function destroyWithTrashed(Request $request)
+    {
+        $id = $request->invoice_id;
+        $invoice = invoices::withTrashed()->where('id', $id)->first();
+        $invoice->forceDelete();
+        session()->flash('delete_invoice');
+        return back();
+    }
+    public function print_invoice($id)
+    {
+
+        $invoice = invoices::find($id);
+        $details = invoices_details::where('invoice_id',$id)->get();
+        return view('invoices.print_invoice', compact('invoice','details'));
+    }
+    public function export()
+    {
+        return Excel::download(new InvoiceExport, 'Invoices.xlsx');
     }
 }

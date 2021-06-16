@@ -28,17 +28,6 @@
 
         </script>
     @endif
-    @if (session()->has('archived_invoice'))
-    <script>
-        window.onload = function() {
-            notif({
-                msg: "تم ارشفة الفاتورة بنجاح",
-                type: "success"
-            })
-        }
-
-    </script>
-@endif
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
@@ -88,8 +77,9 @@
         <div class="col-xl-12">
             <div class="card mg-b-20">
                 <div class="card-header pb-0">
+                    <div class="d-flex justify-content-between">
                         <a href="invoices/create" type="button" class="btn btn-primary">اضافة فاتورة </a>
-                        <a href="export" type="button" class="btn btn-primary"> Export </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -155,17 +145,10 @@
                                                         تعديل</a>
                                                     <a class="dropdown-item" id="delete_btn_id" name="delete_btn_id"
                                                         data-toggle="modal" data-target="#deleteModal"
-                                                        data-id="{{ $i->id }}"><i
+                                                        data-id={{ $i->id }}><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
                                                         حذف</a>
-                                                        <a class="dropdown-item" id="archived_btn_id" name="archived_btn_id"
-                                                        data-toggle="modal" data-target="#archivedModal"
-                                                        data-id="{{ $i->id }}" ><i
-                                                            class=" typcn typcn-arrow-back-outline"></i>
-                                                        ارشفة</a>
-                                                        <a class="dropdown-item" href="print/{{ $i->id }}" ><i
-                                                            class=" typcn typcn-arrow-back-outline"></i>
-                                                        طباعة </a>
+
 
                                                 </div>
                                             </div>
@@ -182,7 +165,7 @@
 
 
 
-        <!-- deleteModal -->
+        <!-- delete -->
         <div class="modal" id="deleteModal">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content modal-content-demo">
@@ -197,8 +180,6 @@
                             <p>هل انت متاكد من عملية الحذف ؟</p><br>
 
                             <input class="form-control" name="invoice_id" id="invoice_id" type="text" readonly hidden>
-                    <input class="form-control" name="page_id" id="page_id" type="text" value="1" readonly hidden>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
@@ -208,31 +189,6 @@
                 </form>
             </div>
         </div>
- <!-- archivedModal -->
- <div class="modal" id="archivedModal">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content modal-content-demo">
-            <div class="modal-header">
-                <h6 class="modal-title">حذف المنتج</h6><button aria-label="Close" class="close" data-dismiss="modal"
-                    type="button"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <form action="invoices/destroy" method="post">
-                {{ method_field('delete') }}
-                {{ csrf_field() }}
-                <div class="modal-body">
-                    <p>هل انت متاكد من عملية الارشفة ؟</p><br>
-
-                    <input  name="invoice_id" id="archived_invoice_id" type="text" readonly hidden>
-                    <input  name="page_id" id="page_id" type="text" value="2" readonly hidden>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
-                    <button type="submit" class="btn btn-success">تاكيد</button>
-                </div>
-        </div>
-        </form>
-    </div>
-</div>
 
 
     </div>
@@ -335,10 +291,6 @@
             var id = button.data('id');
             $('#invoice_id').val(id);
         });
-        $('#archivedModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            $('#archived_invoice_id').val(id);
-        });
+
     </script>
 @endsection

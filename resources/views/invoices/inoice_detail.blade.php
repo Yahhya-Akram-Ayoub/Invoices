@@ -20,10 +20,10 @@
                 <div class="tabs-menu ">
                     <!-- Tabs -->
                     <ul class="nav panel-tabs">
-                        <li class=""><a href="#tab11" class="active" data-toggle="tab"><i class="fa fa-laptop"></i> Tab
-                                Style 01</a></li>
-                        <li><a href="#tab12" data-toggle="tab"><i class="fa fa-cube"></i> Tab Style 02</a></li>
-                        <li><a href="#tab13" data-toggle="tab"><i class="fa fa-cogs"></i> Tab Style 03</a></li>
+                        <li class=""><a href="#tab11" class="active" data-toggle="tab"><i class="fa fa-laptop"></i> معلومات
+                                الفاتورة</a></li>
+                        <li><a href="#tab12" data-toggle="tab"><i class="fa fa-cube"></i> معلومات الدفع</a></li>
+                        <li><a href="#tab13" data-toggle="tab"><i class="fa fa-cogs"></i> المرفقات</a></li>
                     </ul>
                 </div>
             </div>
@@ -99,25 +99,43 @@
                                                 <th>رقم الفاتورة</th>
                                                 <th>نوع المنتج</th>
                                                 <th>القسم</th>
+                                                  <th>تاريخ الدفع </th>
+                                                <th>المدفوع</th>
+                                                <th>اجمالي الدفع</th>
                                                 <th>حالة الدفع</th>
-                                                <th>تاريخ الدفع </th>
-                                                <th>ملاحظات</th>
+
                                                 <th>تاريخ الاضافة </th>
                                                 <th>المستخدم</th>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>{{ $details->invoice_number }}</th>
-                                                    <th>{{ $details->product }}</th>
-                                                    <th>{{ $details->section }}</th>
-                                                    <th>{{ $details->status }}</th>
-                                                    <th>{{ $details->value_status }}</th>
-                                                    <th>{{ $details->note }}</th>
-                                                    <th>{{ $details->created_at }}</th>
-                                                    <th>{{ $details->user }}</th>
-                                                </tr>
+                                                <@php
+                                                    $sum = 0;
+                                                @endphp
+                                                @foreach ($details as $detail)
 
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>{{ $detail->invoice_number }}</th>
+                                                        <th>{{ $detail->product }}</th>
+                                                        <th>{{ $detail->section }}</th>
+
+
+                                                        <th>{{ $detail->value_status }}</th>
+                                                        <th>{{ $detail->amount_paid }}</th>
+                                                        <th>{{  $sum+=$detail->amount_paid  }}</th>
+                                                        <th>
+                                                            @if ($sum ==0 )
+                                                              غير مدفوعة
+                                                           @elseif ( $sum < $invoice->total )
+                                                             مدفوعة جزئيا
+                                                             @else
+                                                             مدفوعة
+                                                        @endif</th>
+                                                        <th>{{ $detail->created_at }}</th>
+                                                        <th>{{ $detail->user }}</th>
+                                                    </tr>
+
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -161,26 +179,28 @@
                                                 @php
                                                     $x = 0;
                                                 @endphp
-                                                @foreach ($attachment as $item)
-                                                    <tr>
-                                                        <th>{{ $x++ }}</th>
-                                                        <th>{{ $item->file_name }}</th>
-                                                        <th>{{ $item->Created_by }}</th>
-                                                        <th>{{ $item->create_date }}</th>
-                                                        <th>
-                                                            <button type="button" name="delete" id="btn-delete"
-                                                                class="btn btn-outline-danger btn-sm" data-toggle="modal"
-                                                                data-target=".bd-example-modal-sm"
-                                                                data-attachment_id="{{ $item->id }}"
-                                                                data-file_name="{{ $item->file_name }}"
-                                                                data-invoice_number="{{ $item->invoice_number }}">حذف</button>
-                                                            <a type="button" class="btn btn-outline-secondary btn-sm"
-                                                                href="../download_file/{{ $item->invoice_number }}/{{ $item->file_name }}">تحميل</a>
-                                                            <a type="button" class="btn btn-outline-secondary btn-sm"
-                                                                href="../view_file/{{ $item->invoice_number }}/{{ $item->file_name }}">عرض</a>
-                                                        </th>
-                                                    </tr>
-                                                @endforeach
+
+
+                                                    @foreach ($attachment as $item)
+                                                        <tr>
+                                                            <th>{{ $x++ }}</th>
+                                                            <th>{{ $item->file_name }}</th>
+                                                            <th>{{ $item->Created_by }}</th>
+                                                            <th>{{ $item->create_date }}</th>
+                                                            <th>
+                                                                <button type="button" name="delete" id="btn-delete"
+                                                                    class="btn btn-outline-danger btn-sm"
+                                                                    data-toggle="modal" data-target=".bd-example-modal-sm"
+                                                                    data-attachment_id="{{ $item->id }}"
+                                                                    data-file_name="{{ $item->file_name }}"
+                                                                    data-invoice_number="{{ $item->invoice_number }}">حذف</button>
+                                                                <a type="button" class="btn btn-outline-secondary btn-sm"
+                                                                    href="../download_file/{{ $item->invoice_number }}/{{ $item->file_name }}">تحميل</a>
+                                                                <a type="button" class="btn btn-outline-secondary btn-sm"
+                                                                    href="../view_file/{{ $item->invoice_number }}/{{ $item->file_name }}">عرض</a>
+                                                            </th>
+                                                        </tr>
+                                                    @endforeach
 
 
                                             </tbody>

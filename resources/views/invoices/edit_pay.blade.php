@@ -44,29 +44,28 @@
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="invoices/update " method="post" enctype="multipart/form-data" autocomplete="off">
-                        {{ csrf_field() }}
-                        {{-- 1 --}}
+                    <form action="/updateDetails" method="post" autocomplete="off">
+                     @csrf
 
                         <input type="text" value="{{ $invoice->id }}" name="id" hidden>
                         <div class="row">
                             <div class="col">
-                                <label for="inputName" class="control-label">رقم الفاتورة</label>
+                                <label for="inputName" class="control-label" readonly>رقم الفاتورة</label>
                                 <input type="text" class="form-control" id="inputName" name="invoice_number"
-                                    value="{{ $invoice->invoice_number }}" title="يرجي ادخال رقم الفاتورة" required>
+                                    value="{{ $invoice->invoice_number }}" title="يرجي ادخال رقم الفاتورة" required
+                                    readonly>
                             </div>
 
                             <div class="col">
                                 <label>تاريخ الفاتورة</label>
                                 <input class="form-control fc-datepicker" name="invoice_Date" placeholder="YYYY-MM-DD"
-                                    value="{{ $invoice->invoive_date }}" type="text" value="{{ date('Y-m-d') }}"
-                                    required>
+                                    value="{{ $invoice->invoive_date }}" type="text" required readonly>
                             </div>
 
                             <div class="col">
                                 <label>تاريخ الاستحقاق</label>
                                 <input class="form-control fc-datepicker" name="Due_date" placeholder="YYYY-MM-DD"
-                                    value="{{ $invoice->due_date }}" type="date" required>
+                                    value="{{ $invoice->due_date }}" type="date" readonly required>
                             </div>
 
                         </div>
@@ -75,7 +74,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">القسم</label>
-                                <select name="Section" class="form-control SlectBox">
+                                <select name="Section" class="form-control SlectBox" readonly>
                                     <!--placeholder-->
                                     <option value="" selected disabled>حدد القسم</option>
                                     @foreach ($sections as $section)
@@ -88,14 +87,14 @@
 
                             <div class="col">
                                 <label for="inputName" class="control-label">المنتج</label>
-                                <select id="product" name="product" class="form-control">
+                                <select id="product" name="product" class="form-control" readonly>
                                 </select>
                             </div>
 
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ التحصيل</label>
                                 <input type="text" class="form-control" id="inputName2" name="Amount_collection"
-                                    value="{{ $invoice->amount_collection }}"
+                                    value="{{ $invoice->amount_collection }}" readonly
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                             </div>
                         </div>
@@ -108,10 +107,10 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ العمولة</label>
                                 <input type="text" class="form-control form-control-lg" id="Amount_Commission"
-                                    value="{{ $invoice->amount_collection }}" name="amount_commission"
+                                    value="{{ $invoice->amount_collection }}" readonly name="amount_commission"
                                     title="يرجي ادخال مبلغ العمولة "
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-                                    required>
+                                    required readonly>
                             </div>
 
                             <div class="col">
@@ -119,12 +118,12 @@
                                 <input type="text" class="form-control form-control-lg" id="Discount" name="Discount"
                                     title="يرجي ادخال مبلغ الخصم " value="{{ $invoice->discount }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-                                    value=0 required>
+                                    value=0 required readonly>
                             </div>
 
                             <div class="col">
                                 <label for="inputName" class="control-label">نسبة ضريبة القيمة المضافة</label>
-                                <select name="Rate_VAT" id="Rate_VAT" class="form-control" onchange="myFunction()">
+                                <select name="Rate_VAT" readonly id="Rate_VAT" class="form-control" onchange="myFunction()">
                                     <!--placeholder-->
                                     <option value="" selected disabled>حدد نسبة الضريبة</option>
                                     <option value="5%" {{ $invoice->rate_vat == '5%' ? 'selected' : '' }}>5%</option>
@@ -139,7 +138,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">قيمة ضريبة القيمة المضافة</label>
-                                <input type="text" class="form-control" id="Value_VAT" name="Value_VAT" readonly>
+                                <input type="text" class="form-control" readonly id="Value_VAT" name="Value_VAT">
                             </div>
 
                             <div class="col">
@@ -152,86 +151,36 @@
                         <div class="row">
                             <div class="col">
                                 <label for="exampleTextarea">ملاحظات</label>
-                                <textarea class="form-control" id="exampleTextarea" name="note"
+                                <textarea class="form-control" id="exampleTextarea" name="note" readonly
                                     rows="3">{{ $invoice->note }}</textarea>
                             </div>
                         </div><br>
 
-                        <p class="text-danger">* صيغة المرفق pdf, jpeg ,.jpg , png </p>
-                        <h5 class="card-title">المرفقات</h5>
-
-
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="table-responsive">
-
-                                    <table id="attachment_table" class="table table-striped mg-b-0 text-md-nowrap">
-                                        <thead>
-                                            <th scope="col">م</th>
-                                            <th scope="col">اسم الملف</th>
-                                            <th scope="col">قام بالاضافة</th>
-                                            <th scope="col">تاريخ الاضافة</th>
-                                            <th scope="col">العمليات</th>
-                                        </thead>
-                                        <tbody>
-
-                                            @php
-                                                $x = 0;
-                                            @endphp
-
-
-                                            @foreach ($attachment as $item)
-                                                <tr>
-                                                    <th>{{ $x++ }}</th>
-                                                    <th>{{ $item->file_name }}</th>
-                                                    <th>{{ $item->Created_by }}</th>
-                                                    <th>{{ $item->create_date }}</th>
-                                                    <th>
-                                                        <button type="button" name="delete" id="btn-delete"
-                                                            class="btn btn-outline-danger btn-sm" data-toggle="modal"
-                                                            data-target=".bd-example-modal-sm"
-                                                            data-attachment_id="{{ $item->id }}"
-                                                            data-file_name="{{ $item->file_name }}"
-                                                            data-invoice_number="{{ $item->invoice_number }}">حذف</button>
-                                                        <a type="button" class="btn btn-outline-secondary btn-sm"
-                                                            href="../download_file/{{ $item->invoice_number }}/{{ $item->file_name }}">تحميل</a>
-                                                        <a type="button" class="btn btn-outline-secondary btn-sm"
-                                                            href="../view_file/{{ $item->invoice_number }}/{{ $item->file_name }}">عرض</a>
-                                                    </th>
-                                                </tr>
-                                            @endforeach
-
-
-                                        </tbody>
-                                    </table>
-                                </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="inputName" class="control-label" >المبلغ االمدفوع</label>
+                                <input type="number" class="form-control" id="amount_paid"  max="{{$invoice->total - $details->sum('amount_paid')}}" name="amount_paid" required
+                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                            </div>
+                            <div class="col">
+                                <label>تاريخ الدفع</label>
+                                <input class="form-control fc-datepicker" name="pay_date" id="pay_date"
+                                    placeholder="YYYY-MM-DD" value="{{ date('Y-m-d') }}" type="date">
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12">
-                            <button type="button" class="btn btn-primary"
-                                onclick="document.getElementById('pic').click()">اضافة ملف</button>
-                            <input type="file" name="pic" id="pic" style="display:none" class="dropify"
-                                accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" />
-                        </div><br>
 
-
-                        <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary">حفظ البيانات</button>
+                        <div class="col m-2">
+                            <button class="btn btn-primary" type="submit"> حفظ المعلومات</button>
                         </div>
-
-
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
 
-    </div>
 
-    <!-- row closed -->
-    </div>
-    <!-- Container closed -->
-    </div>
+
     <!-- main-content closed -->
 @endsection
 
@@ -257,12 +206,6 @@
     <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
 
 
-    <script>
-        var date = $('.fc-datepicker').datepicker({
-            dateFormat: 'yy-mm-dd'
-        }).val();
-
-    </script>
 
 
     <script>
@@ -321,22 +264,9 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            $('#pic').on('change', function() {
-
-                //// صع نفس زر الاضافة الي عند المرفقات وريح راسك
-                const fileList = document.getElementById("pic").value;
-                console.log(fileList);
-                alert(fileList);
-                console.log('fileList');
-
-                // $('#attachment_table').append(
-//                    ''
-                // );
-
-
-            });
-        });
+        var date = $('.fc-datepicker').datepicker({
+            dateFormat: 'yy-mm-dd'
+        }).val();
 
     </script>
 
