@@ -201,12 +201,12 @@
     <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
 
 
-    <script>
+    {{-- <script>
         var date = $('.fc-datepicker').datepicker({
             dateFormat: 'yy-mm-dd'
         }).val();
 
-    </script>
+        </script> --}}
 
 
     <script>
