@@ -113,6 +113,6 @@ class ProductController extends Controller
         $products = product::all()->where('section_id',  $id)->pluck('product_name','id');
 
         //json for ajax
-        return json_encode( $products);// return responde()->josn($product);
+        return json_encode($products);// return responde()->josn($product);
     }
 }

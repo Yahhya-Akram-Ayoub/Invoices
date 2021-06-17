@@ -55,7 +55,7 @@
 
             <div class="card-header pb-0">
 
-                <form action="{{ route('invoices_reports.show', 'error') }}" method="get" role="search" autocomplete="off">
+                <form action="search_invoices_report" method="get" role="search" autocomplete="off">
                     {{ csrf_field() }}
 
 
@@ -74,8 +74,8 @@
                     <div class="row">
 
                         <div class="col-lg-3 mg-t-20 mg-lg-t-0" id="type">
-                            <p class="mg-b-10">تحديد نوع الفواتير</p><select class="form-control select2" name="type"
-                                required>
+                            <p class="mg-b-10">تحديد نوع الفواتير</p>
+                            <select class="form-control select2" name="type"  required>
                                 <option value="{{ $type ?? 'حدد نوع الفواتير' }}" selected>
                                     {{ $type ?? 'حدد نوع الفواتير' }}
                                 </option>
@@ -149,29 +149,33 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i = 0; ?>
+                                <?php $c = 0; ?>
                                 @foreach ($details as $invoice)
-                                    <?php $i++; ?>
+                                    <?php $c++; ?>
                                     <tr>
-                                        <td>{{ $i }}</td>
-                                        <td>{{ $invoice->invoice_number }} </td>
-                                        <td>{{ $invoice->invoice_Date }}</td>
-                                        <td>{{ $invoice->Due_date }}</td>
-                                        <td>{{ $invoice->product }}</td>
-                                        <td><a
-                                                href="{{ url('InvoicesDetails') }}/{{ $invoice->id }}">{{ $invoice->section->section_name }}</a>
-                                        </td>
-                                        <td>{{ $invoice->Discount }}</td>
-                                        <td>{{ $invoice->Rate_VAT }}</td>
-                                        <td>{{ $invoice->Value_VAT }}</td>
-                                        <td>{{ $invoice->Total }}</td>
+
+
+
+
+
+                                        <td>{{ $c }}</td>
+                                        <th class="border-bottom-0">{{ $invoice->invoice_number }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->invoive_date }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->due_date }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->product_id }}</th>
+                                       <th class="border-bottom-0">{{ $invoice->section_id }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->discount }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->rate_vat }}</td>
+                                            <th class="border-bottom-0">{{ $invoice->value_vat }}</td>
+                                        <th class="border-bottom-0">{{ $invoice->total }}</th>
+
                                         <td>
-                                            @if ($invoice->Value_Status == 1)
-                                                <span class="text-success">{{ $invoice->Status }}</span>
-                                            @elseif($invoice->Value_Status == 2)
-                                                <span class="text-danger">{{ $invoice->Status }}</span>
+                                            @if ($invoice->value_vtatus == 1)
+                                                <span class="text-success">{{ $invoice->status }}</span>
+                                            @elseif($invoice->value_status == 2)
+                                                <span class="text-danger">{{ $invoice->status }}</span>
                                             @else
-                                                <span class="text-warning">{{ $invoice->Status }}</span>
+                                                <span class="text-warning">{{ $invoice->status }}</span>
                                             @endif
 
                                         </td>

@@ -55,7 +55,7 @@
 
             <div class="card-header pb-0">
 
-                <form action="/Search_customers" method="POST" role="search" autocomplete="off">
+                <form action="search_customers_report" method="POST" role="search" autocomplete="off">
                     {{ csrf_field() }}
 
 
@@ -107,7 +107,7 @@
 
                     <div class="row">
                         <div class="col-sm-1 col-md-1">
-                            <button class="btn btn-primary btn-block">بحث</button>
+                            <button class="btn btn-primary btn-block" id="search_btn">بحث</button>
                         </div>
                     </div>
                 </form>
@@ -230,16 +230,18 @@
     $(document).ready(function() {
         $('select[name="Section"]').on('change', function() {
             var SectionId = $(this).val();
+        $('select[name="product"]').empty();
             if (SectionId) {
                 $.ajax({
-                    url: "{{ URL::to('section') }}/" + SectionId,
+                    url: '../get_product/' + SectionId,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        $('select[name="product"]').empty();
+                        // $('select[name="product"]').empty();s
                         $.each(data, function(key, value) {
+
                             $('select[name="product"]').append('<option value="' +
-                                value + '">' + value + '</option>');
+                            value + '">' + value + '</option>');
                         });
                     },
                 });

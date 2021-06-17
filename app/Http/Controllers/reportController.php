@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\invoices;
+use App\Models\Section;
 use Illuminate\Http\Request;
 
 class reportController extends Controller
@@ -13,8 +15,20 @@ class reportController extends Controller
      */
     public function index()
     {
+        $this->invoices_report();
+    }
+
+    public function invoices_report()
+    {
         return view('reports.invoices_report');
     }
+
+    public function custmers_report()
+    {
+        $sections = Section::all();
+        return view('reports.customers_report', compact('sections'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -45,16 +59,56 @@ class reportController extends Controller
      */
     public function show(Request $request)
     {
-        $rdio = $request->rdio;
-
-
-        if($rdio == 1){
-
-        }else{
-
-        }
+        return $request;
     }
 
+    public function search_invoices_report(Request $request)
+    {
+
+        $rdio = $request->rdio;
+
+        // raio == 1 search by invoive type
+        //  raio == 2 search by invoive number
+
+        if ($rdio == 1) {
+            if (!empty($request->type) && empty($request->start_at) && empty($request->end_at)) {
+                $type = $request->type;
+                $invoices = invoices::where('status', $request->type)->get();
+                return view('reports.invoices_report', compact('type'))->withDetails($invoices);
+            } else {
+                $type = $request->type;
+                $start_at = date($request->start_at);
+                $end_at = date($request->end_at);
+                $invoices = invoices::whereBetween('invoive_date', [$start_at, $end_at])->where('status', $request->type)->get();
+                return view('reports.invoices_report', compact('type', 'end_at', 'start_at'))->withDetails($invoices);
+            }
+        } else {
+            $invoice_number = $request->invoice_number;
+            $invoices = invoices::where('invoice_number', '=', $invoice_number)->first();
+            return view('reports.invoices_report', compact('invoice_number'))->withDetails($invoices);
+        }
+        return "errorr";
+    }
+    public function search_customers_report(Request $request)
+    {
+        if (!empty($request->product) && !empty($request->Section) && empty($request->start_at) && empty($request->end_at)) {
+
+            $invoices = invoices::where('section_id', $request->Section)->where('product_id', $request->product)->get();
+            $sections = Section::all();
+
+
+            return view('reports.customers_report', compact('sections'))->withDetails($invoices);
+        } else {
+
+
+            $start_at = date($request->start_at);
+            $end_at = date($request->end_at);
+            $invoices = invoices::whereBetween('invoive_date', [$start_at, $end_at])->where('section_id', '=', $request->Section)->where('product_id', '=', $request->product)->get();
+            $sections = Section::all();
+
+            return view('reports.customers_report', compact('sections', 'end_at', 'start_at'))->withDetails($invoices);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      *

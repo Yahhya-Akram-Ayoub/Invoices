@@ -37,7 +37,7 @@ Route::resource('/invoices', InvoicesController::class);
 Route::resource('/section', SectionController::class);
 Route::resource('/product', ProductController::class);
 Route::resource('/attachment', InvoicesAttachmentController::class);
-Route::resource('/invoices_reports', reportController::class );
+Route::resource('/reports', reportController::class );
 
 Route::post('/delete-attachment', [InvoicesAttachmentController::class, 'delete']);
 Route::get('/get_product/{id}', [ProductController::class, 'getProduct']);
@@ -54,6 +54,12 @@ Route::get('/archived_invoiced', [InvoicesController::class, 'archived_invoiced'
 Route::post('/destroyWithTrashed', [InvoicesController::class, 'destroyWithTrashed']);
 Route::get('/print/{id}', [InvoicesController::class, 'print_invoice']);
 Route::get('/markAsRead', [InvoicesController::class , 'markAsRead']);
+
+
+Route::get('/invoices_report', [reportController::class , 'invoices_report']);
+Route::get('/custmers_report', [reportController::class , 'custmers_report']);
+Route::post('/search_invoices_report', [reportController::class , 'search_invoices_report']);
+Route::post('/search_customers_report', [reportController::class , 'search_customers_report']);
 
 
 
