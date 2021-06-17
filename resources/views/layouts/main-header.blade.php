@@ -83,7 +83,7 @@
 									<div class="menu-header-content bg-primary text-right">
 										<div class="d-flex">
 											<h6 class="dropdown-title mb-1 tx-15 text-white font-weight-semibold">Messages</h6>
-											<span class="badge badge-pill badge-warning mr-auto my-auto float-left">Mark All Read</span>
+											<a href="/markAsRead"><span class="badge badge-pill badge-warning mr-auto my-auto float-left">Mark All Read</span></a>
 										</div>
 										<p class="dropdown-title-text subtext mb-0 text-white op-6 pb-0 tx-12 ">You have 4 unread messages</p>
 									</div>
@@ -161,24 +161,31 @@
 									<div class="menu-header-content bg-primary text-right">
 										<div class="d-flex">
 											<h6 class="dropdown-title mb-1 tx-15 text-white font-weight-semibold">Notifications</h6>
-											<span class="badge badge-pill badge-warning mr-auto my-auto float-left">Mark All Read</span>
+										<span class="badge badge-pill badge-warning mr-auto my-auto float-left">	<a href="../markAsRead" >Mark All Read</a></span>
 										</div>
-										<p class="dropdown-title-text subtext mb-0 text-white op-6 pb-0 tx-12 ">You have 4 unread Notifications</p>
+										<p class="dropdown-title-text subtext mb-0 text-white op-6 pb-0 tx-12 " id="count_notifi">You have {{ auth()->user()->unreadNotifications->count() }}  unread Notifications</p>
 									</div>
-									<div class="main-notification-list Notification-scroll">
-										<a class="d-flex p-3 border-bottom" href="#">
+									<div class="main-notification-list Notification-scroll" id="display_notifi">
+                                        @foreach(auth()->user()->unreadNotifications as $notification)
+
+                                         <a class="d-flex p-3 border-bottom" href="/showInvoices/{{ $notification->data['id']}}">
 											<div class="notifyimg bg-pink">
 												<i class="la la-file-alt text-white"></i>
 											</div>
 											<div class="mr-3">
-												<h5 class="notification-label mb-1">New files available</h5>
-												<div class="notification-subtext">10 hour ago</div>
+												<h5 class="notification-label mb-1">{{ $notification->data['title'] }} </h5>
+												<h5 class="notification-label mb-1"> بواسطة : {{ $notification->data['user'] }}</h5>
+												<div class="notification-subtext">{{ $notification->data['date'] }}  </div>
 											</div>
 											<div class="mr-auto" >
 												<i class="las la-angle-left text-left text-muted"></i>
 											</div>
-										</a>
-										<a class="d-flex p-3" href="#">
+									 	 </a>
+
+
+                                         @endforeach
+
+										{{--	<a class="d-flex p-3" href="#">
 											<div class="notifyimg bg-purple">
 												<i class="la la-gem text-white"></i>
 											</div>
@@ -237,7 +244,7 @@
 											<div class="mr-auto" >
 												<i class="las la-angle-left text-left text-muted"></i>
 											</div>
-										</a>
+										</a> --}}
 									</div>
 									<div class="dropdown-footer">
 										<a href="">VIEW ALL</a>

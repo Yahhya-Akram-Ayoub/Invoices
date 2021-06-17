@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\reportController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\InvoicesController;
@@ -27,7 +28,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/updateDetails', [InvoicesController::class, 'updateDetails']);
@@ -36,9 +37,7 @@ Route::resource('/invoices', InvoicesController::class);
 Route::resource('/section', SectionController::class);
 Route::resource('/product', ProductController::class);
 Route::resource('/attachment', InvoicesAttachmentController::class);
-
-
-
+Route::resource('/invoices_reports', reportController::class );
 
 Route::post('/delete-attachment', [InvoicesAttachmentController::class, 'delete']);
 Route::get('/get_product/{id}', [ProductController::class, 'getProduct']);
@@ -54,6 +53,7 @@ Route::get('/invoices_partially_paid', [InvoicesController::class, 'invoices_par
 Route::get('/archived_invoiced', [InvoicesController::class, 'archived_invoiced']);
 Route::post('/destroyWithTrashed', [InvoicesController::class, 'destroyWithTrashed']);
 Route::get('/print/{id}', [InvoicesController::class, 'print_invoice']);
+Route::get('/markAsRead', [InvoicesController::class , 'markAsRead']);
 
 
 

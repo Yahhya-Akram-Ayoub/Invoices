@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Models\invoices_details;
 use App\Notifications\addInvoice;
 use App\Models\invoices_attachment;
+use App\Models\User;
+use App\Notifications\notifi_addInvoice;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -83,7 +85,12 @@ class invoicesController extends Controller
             $request->invoice_id = $invoice_id;
             $this->addAttachment($request);
         }
+
+        $users = User::where('id', '!=', Auth::user()->id)->get();
         Notification::send(Auth::user(), new addInvoice($invoice_id));
+        Notification::send($users, new notifi_addInvoice($request->invoice_number, $invoice_id));
+
+
         session()->flash('Add', 'تم اضافة الفاتورة بنجاح');
         return back();
     }
@@ -257,11 +264,17 @@ class invoicesController extends Controller
     {
 
         $invoice = invoices::find($id);
-        $details = invoices_details::where('invoice_id',$id)->get();
-        return view('invoices.print_invoice', compact('invoice','details'));
+        $details = invoices_details::where('invoice_id', $id)->get();
+        return view('invoices.print_invoice', compact('invoice', 'details'));
     }
     public function export()
     {
         return Excel::download(new InvoiceExport, 'Invoices.xlsx');
+    }
+    public function markAsRead()
+    {
+        auth()->user()->unreadNotifications->markAsRead();
+
+        return redirect()->back();
     }
 }
