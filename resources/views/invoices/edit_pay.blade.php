@@ -87,7 +87,7 @@
 
                             <div class="col">
                                 <label for="inputName" class="control-label">المنتج</label>
-                                <select id="product" name="product" class="form-control" readonly>
+                                <select id="branch" name="branch" class="form-control" readonly>
                                 </select>
                             </div>
 
@@ -215,14 +215,14 @@
             if (section_id) {
 
                 $.ajax({
-                    url: "../get_product/" + section_id,
+                    url: "../get_branch/" + section_id,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
                         console.log(data);
-                        $('select[name="product"]').empty();
+                        $('select[name="branch"]').empty();
                         $.each(data, function(key, value) {
-                            $('select[name="product"]').append(' <option value="' +
+                            $('select[name="branch"]').append(' <option value="' +
                                 value + '"> ' + value + '</option>');
 
                         });

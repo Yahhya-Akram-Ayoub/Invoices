@@ -106,7 +106,7 @@
 						<div class="card overflow-hidden sales-card bg-warning-gradient">
 							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
 								<div class="">
-									<h6 class="mb-3 tx-12 text-white">PRODUCT SOLD</h6>
+									<h6 class="mb-3 tx-12 text-white">branch SOLD</h6>
 								</div>
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
@@ -269,24 +269,24 @@
 								<h3 class="card-title mb-2">Sales Activity</h3>
 								<p class="tx-12 mb-0 text-muted">Sales activities are the tactics that salespeople use to achieve their goals and objective</p>
 							</div>
-							<div class="product-timeline card-body pt-2 mt-1">
+							<div class="branch-timeline card-body pt-2 mt-1">
 								<ul class="timeline-1 mb-0">
-									<li class="mt-0"> <i class="ti-pie-chart bg-primary-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Total Products</span> <a href="#" class="float-left tx-11 text-muted">3 days ago</a>
-										<p class="mb-0 text-muted tx-12">1.3k New Products</p>
+									<li class="mt-0"> <i class="ti-pie-chart bg-primary-gradient text-white branch-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Total branchs</span> <a href="#" class="float-left tx-11 text-muted">3 days ago</a>
+										<p class="mb-0 text-muted tx-12">1.3k New branchs</p>
 									</li>
-									<li class="mt-0"> <i class="mdi mdi-cart-outline bg-danger-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Total Sales</span> <a href="#" class="float-left tx-11 text-muted">35 mins ago</a>
+									<li class="mt-0"> <i class="mdi mdi-cart-outline bg-danger-gradient text-white branch-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Total Sales</span> <a href="#" class="float-left tx-11 text-muted">35 mins ago</a>
 										<p class="mb-0 text-muted tx-12">1k New Sales</p>
 									</li>
-									<li class="mt-0"> <i class="ti-bar-chart-alt bg-success-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Toatal Revenue</span> <a href="#" class="float-left tx-11 text-muted">50 mins ago</a>
+									<li class="mt-0"> <i class="ti-bar-chart-alt bg-success-gradient text-white branch-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Toatal Revenue</span> <a href="#" class="float-left tx-11 text-muted">50 mins ago</a>
 										<p class="mb-0 text-muted tx-12">23.5K New Revenue</p>
 									</li>
-									<li class="mt-0"> <i class="ti-wallet bg-warning-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Toatal Profit</span> <a href="#" class="float-left tx-11 text-muted">1 hour ago</a>
+									<li class="mt-0"> <i class="ti-wallet bg-warning-gradient text-white branch-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Toatal Profit</span> <a href="#" class="float-left tx-11 text-muted">1 hour ago</a>
 										<p class="mb-0 text-muted tx-12">3k New profit</p>
 									</li>
-									<li class="mt-0"> <i class="si si-eye bg-purple-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Customer Visits</span> <a href="#" class="float-left tx-11 text-muted">1 day ago</a>
+									<li class="mt-0"> <i class="si si-eye bg-purple-gradient text-white branch-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Customer Visits</span> <a href="#" class="float-left tx-11 text-muted">1 day ago</a>
 										<p class="mb-0 text-muted tx-12">15% increased</p>
 									</li>
-									<li class="mt-0 mb-0"> <i class="icon-note icons bg-primary-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Customer Reviews</span> <a href="#" class="float-left tx-11 text-muted">1 day ago</a>
+									<li class="mt-0 mb-0"> <i class="icon-note icons bg-primary-gradient text-white branch-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Customer Reviews</span> <a href="#" class="float-left tx-11 text-muted">1 day ago</a>
 										<p class="mb-0 text-muted tx-12">1.5k reviews</p>
 									</li>
 								</ul>

@@ -16,10 +16,13 @@ class CreateInvoicesAttachmentsTable extends Migration
         Schema::create('invoices_attachments', function (Blueprint $table) {
             $table->id();
             $table->string('file_name', 999);
-            $table->string('invoice_number', 50);
-            $table->string('Created_by', 999);
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+
             $table->unsignedBigInteger('invoice_id')->nullable();
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

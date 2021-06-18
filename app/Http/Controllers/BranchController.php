@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\product;
+use App\Models\Branch;
 use App\Models\Section;
 use Illuminate\Http\Request;
-use App\Http\Requests\ProductRequest;
+use App\Http\Requests\branchRequest;
 
-class ProductController extends Controller
+class BranchController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products =  product::all();
+        $branchs =  Branch::all();
         $sections = Section::all();
-        return view('section.section-products', compact(['products', 'sections']));
+        return view('section.section-branchs', compact(['branchs', 'sections']));
     }
 
     /**
@@ -37,27 +37,27 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
+    public function store(branchRequest $request)
     {
         $validated = $request->validated();
 
-        product::create([
-            'product_name' => $request->product_name,
+        Branch::create([
+            'branch_name' => $request->branch_name,
             'description' => $request->description,
             'section_id' => $request->section_id
 
         ]);
 
-        return redirect('product');
+        return redirect('branch');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\product  $product
+     * @param  \App\Models\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    public function show(product $product)
+    public function show(branch $branch)
     {
         //
     }
@@ -65,10 +65,10 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\product  $product
+     * @param  \App\Models\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    public function edit(product $product)
+    public function edit(branch $branch)
     {
         //
     }
@@ -77,42 +77,42 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\product  $product
+     * @param  \App\Models\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request)
+    public function update(branchRequest $request)
     {
         $validated = $request->validated();
 
-        product::where('id', '=', $request->id)->update([
-            'product_name' => $request->product_name,
+        Branch::where('id', '=', $request->id)->update([
+            'branch_name' => $request->branch_name,
             'description' => $request->description,
             'section_id' => $request->section_id
 
         ]);
 
-        return redirect('product');
+        return redirect('branch');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\product  $product
+     * @param  \App\Models\Branch  $branch
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
     {
-        $product = product::find($request->id);
-        $product->delete();
+        $branch = Branch::find($request->id);
+        $branch->delete();
         session()->flash('delete', 'تم حذف المنتج ');
-        return redirect('product');
+        return redirect('branch');
     }
 
-    public function getProduct($id)
+    public function getbranch($id)
     {
-        $products = product::all()->where('section_id',  $id)->pluck('product_name','id');
+        $branchs = Branch::all()->where('section_id',  $id)->pluck('branch_name','id');
 
         //json for ajax
-        return json_encode($products);// return responde()->josn($product);
+        return json_encode($branchs);// return responde()->josn($branch);
     }
 }

@@ -76,11 +76,7 @@
         <!--div-->
         <div class="col-xl-12">
             <div class="card mg-b-20">
-                <div class="card-header pb-0">
-                    <div class="d-flex justify-content-between">
-                        <a href="invoices/create" type="button" class="btn btn-primary">اضافة فاتورة </a>
-                    </div>
-                </div>
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="example" class="table key-buttons text-md-nowrap">
@@ -110,7 +106,7 @@
                                         <th class="border-bottom-0">{{ $i->invoice_number }}</th>
                                         <th class="border-bottom-0">{{ $i->invoive_date }}</th>
                                         <th class="border-bottom-0">{{ $i->due_date }}</th>
-                                        <th class="border-bottom-0">{{ $i->product_id }}</th>
+                                        <th class="border-bottom-0">{{ $i->branch_id }}</th>
                                         <th class="border-bottom-0">{{ $i->section_id }}</th>
                                         <th class="border-bottom-0">{{ $i->discount }}</th>
                                         <th class="border-bottom-0">{{ $i->total }}</th>

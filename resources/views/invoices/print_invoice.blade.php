@@ -104,7 +104,7 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>{{ $detail->invoice_number }}</th>
-                                                    <th>{{ $detail->product }}</th>
+                                                    <th>{{ $detail->branch }}</th>
                                                     <th>{{ $detail->section }}</th>
                                                     <th>{{ $detail->value_status }}</th>
                                                     <th>{{ $detail->amount_paid }}</th>

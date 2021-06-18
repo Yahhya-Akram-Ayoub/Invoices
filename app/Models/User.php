@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Branch;
 use App\Models\Section;
+use App\Models\invoices;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -51,5 +53,13 @@ class User extends Authenticatable
     public function Section()
     {
         return $this->hasMany(Section::class);
+    }
+    public function branchs()
+    {
+        return $this->hasMany(Branch::class);
+    }
+    public function Invoices()
+    {
+        return $this->hasMany(invoices::class);
     }
 }

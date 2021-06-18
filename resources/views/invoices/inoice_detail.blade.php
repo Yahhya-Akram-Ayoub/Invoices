@@ -48,7 +48,7 @@
 
                                             <tr>
                                                 <th scope="row">المنتج</th>
-                                                <td>{{ $invoice->product_id }}</td>
+                                                <td>{{ $invoice->branch_id }}</td>
                                                 <th scope="row">مبلغ التحصيل</th>
                                                 <td>{{ $invoice->amount_collection }}</td>
                                                 <th scope="row">مبلغ العمولة</th>
@@ -116,7 +116,7 @@
                                                     <tr>
                                                         <th>#</th>
                                                         <th>{{ $detail->invoice_number }}</th>
-                                                        <th>{{ $detail->product }}</th>
+                                                        <th>{{ $detail->branch }}</th>
                                                         <th>{{ $detail->section }}</th>
 
 
@@ -149,7 +149,7 @@
 
 
 
-                            <form action="../add-attachment" method="POST" id="add_form" enctype="multipart/form-data">
+                            @can('Add Attachment')     <form action="../add-attachment" method="POST" id="add_form" enctype="multipart/form-data">
                                 @csrf
                                 <div class="custom-file">
                                     <input type="file" name="pic" id="pic" class="custom-file-input"
@@ -159,7 +159,7 @@
                                     <input type="hidden" id="invoice_number" name="invoice_number"
                                         value="{{ $invoice->invoice_number }}">
                                 </div>
-                            </form>
+                            </form>  @endcan
 
 
                             <div class="card">
@@ -188,13 +188,15 @@
                                                             <th>{{ $item->Created_by }}</th>
                                                             <th>{{ $item->create_date }}</th>
                                                             <th>
-                                                                <button type="button" name="delete" id="btn-delete"
+                                                                @can('Delete Attachment')
+                                                                  <button type="button" name="delete" id="btn-delete"
                                                                     class="btn btn-outline-danger btn-sm"
                                                                     data-toggle="modal" data-target=".bd-example-modal-sm"
                                                                     data-attachment_id="{{ $item->id }}"
                                                                     data-file_name="{{ $item->file_name }}"
                                                                     data-invoice_number="{{ $item->invoice_number }}">حذف</button>
-                                                                <a type="button" class="btn btn-outline-secondary btn-sm"
+                                                                    @endcan
+                                                                    <a type="button" class="btn btn-outline-secondary btn-sm"
                                                                     href="../download_file/{{ $item->invoice_number }}/{{ $item->file_name }}">تحميل</a>
                                                                 <a type="button" class="btn btn-outline-secondary btn-sm"
                                                                     href="../view_file/{{ $item->invoice_number }}/{{ $item->file_name }}">عرض</a>

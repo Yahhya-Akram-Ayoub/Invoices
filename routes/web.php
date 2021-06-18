@@ -7,7 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\reportController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\branchController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\InvoicesDetailsController;
@@ -35,22 +35,25 @@ Route::post('/updateDetails', [InvoicesController::class, 'updateDetails']);
 
 Route::resource('/invoices', InvoicesController::class);
 Route::resource('/section', SectionController::class);
-Route::resource('/product', ProductController::class);
+Route::resource('/branch', branchController::class);
 Route::resource('/attachment', InvoicesAttachmentController::class);
 Route::resource('/reports', reportController::class );
 
 Route::post('/delete-attachment', [InvoicesAttachmentController::class, 'delete']);
-Route::get('/get_product/{id}', [ProductController::class, 'getProduct']);
+Route::get('/get_branch/{id}', [branchController::class, 'getbranch']);
 Route::get('/showInvoices/{id}', [InvoicesDetailsController::class, 'show']);
 Route::get('/edit/{id}', [InvoicesDetailsController::class, 'edit']);
 Route::get('/show_pay/{id}', [InvoicesDetailsController::class, 'pay']);
 Route::post('/add-attachment', [InvoicesController::class, 'addAttachment']);
+//لاستعادة المحذوفات
 Route::post('/restore', [InvoicesController::class, 'restore'])->name('restore');
+Route::post('/archive', [InvoicesController::class, 'archive'])->name('archive');
 
 Route::get('/invoices_paid', [InvoicesController::class, 'invoices_paid']);
 Route::get('/invoices_unpaid', [InvoicesController::class, 'invoices_unpaid']);
 Route::get('/invoices_partially_paid', [InvoicesController::class, 'invoices_partially_paid']);
 Route::get('/archived_invoiced', [InvoicesController::class, 'archived_invoiced']);
+Route::get('/deleted_invoiced', [InvoicesController::class, 'deleted_invoiced']);
 Route::post('/destroyWithTrashed', [InvoicesController::class, 'destroyWithTrashed']);
 Route::get('/print/{id}', [InvoicesController::class, 'print_invoice']);
 Route::get('/markAsRead', [InvoicesController::class , 'markAsRead']);

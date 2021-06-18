@@ -50,17 +50,16 @@ class invoicesController extends Controller
     {
         invoices::create([
             'invoice_number' => $request->invoice_number,
-            'invoive_date' => $request->invoice_Date,
+            'invoice_date' => $request->invoice_Date,
             'due_date' => $request->Due_date,
-            'product_id' => $request->product,
+            'branch_id' => $request->branch,
             'section_id' => $request->Section,
             'amount_collection' => $request->Amount_collection,
             'amount_commission' => $request->Amount_Commission,
             'discount' => $request->Discount,
             'value_vat' => $request->Value_VAT,
             'rate_vat' => $request->Rate_VAT,
-            'total' => $request->Total,
-            'value_status' => 2,
+            'total_amount' => $request->Total,
             'note' => $request->note,
             'user_id' => Auth::user()->id
         ]);
@@ -69,14 +68,9 @@ class invoicesController extends Controller
 
         invoices_details::create([
             'invoice_id' => $invoice_id,
-            'invoice_number' => $request->invoice_number,
-            'product' => $request->product,
-            'section' => $request->Section,
-            'status' => 'غير مدفوعة',
-            'value_status' => 2,
             'amount_paid' => 0,
             'note' => $request->note,
-            'user' => (Auth::user()->name),
+            'user_id' => Auth::user()->id,
         ]);
 
 
@@ -128,17 +122,16 @@ class invoicesController extends Controller
     {
         invoices::where('id', $request->id)->update([
             'invoice_number' => $request->invoice_number,
-            'invoive_date' => $request->invoice_Date,
+            'invoice_date' => $request->invoice_Date,
             'due_date' => $request->Due_date,
-            'product_id' => $request->product,
+            'branch_id' => $request->branch,
             'section_id' => $request->Section,
             'amount_collection' => $request->Amount_collection,
             'amount_commission' => $request->Amount_Commission,
             'discount' => $request->Discount,
             'value_vat' => $request->Value_VAT,
             'rate_vat' => $request->Rate_VAT,
-            'total' => $request->Total,
-            'value_status' => 2,
+            'total_amount' => $request->Total,
             'note' => $request->note,
             'user_id' => Auth::user()->id
         ]);
@@ -194,9 +187,8 @@ class invoicesController extends Controller
             $invoice_number =  $request->invoice_number;
             invoices_attachment::create(
                 [
-                    'file_name' =>    $fileName,
-                    'invoice_number' => $invoice_number,
-                    'Created_by' => Auth::user()->name,
+                    'file_name' =>  $fileName,
+                    'user_id' => Auth::user()->id,
                     'invoice_id' => $request->invoice_id
                 ]
             );
@@ -213,13 +205,9 @@ class invoicesController extends Controller
         invoices_details::create([
             'invoice_id' => $request->id,
             'invoice_number' => $request->invoice_number,
-            'product' => $request->product,
-            'section' => $request->Section,
-            'status' => 'غير مدفوعة',
-            'value_status' => 2,
             'amount_paid' => $request->amount_paid,
             'note' => $request->note,
-            'user' => (Auth::user()->name),
+            'user_id' => (Auth::user()->id),
         ]);
 
         return back();
@@ -240,9 +228,14 @@ class invoicesController extends Controller
         $invoices = invoices::where('value_status', 1)->get();
         return view('invoices.invoices_partially_paid', compact('invoices'));
     }
-    public function archived_invoiced()
+    public function deleted_invoiced()
     {
         $invoices = invoices::onlyTrashed()->get();
+        return view('invoices.deleted_invoiced', compact('invoices'));
+    }
+    public function archived_invoiced()
+    {
+        $invoices = invoices::where('archive' , '=' , 1)->get();
         return view('invoices.archived_invoiced', compact('invoices'));
     }
     public function restore(Request $request)
@@ -270,6 +263,16 @@ class invoicesController extends Controller
     public function export()
     {
         return Excel::download(new InvoiceExport, 'Invoices.xlsx');
+    }
+    public function archive(Request $request)
+    {
+        if ($request->page_id == 2) {
+            invoices::find($request->invoice_id)->update(['archive' => 1]);
+        } else if ($request->page_id == 1) {
+            invoices::find($request->invoice_id)->update(['archive' => 0]);
+        }
+
+        return back();
     }
     public function markAsRead()
     {

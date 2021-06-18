@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Branch;
 use App\Models\invoices;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +19,8 @@ class Section extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function invoices(){
-        return $this->hasMany(invoices::class);
+
+    public function branchs(){
+        return $this->hasMany(Branch::class);
     }
 }

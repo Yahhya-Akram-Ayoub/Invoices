@@ -173,7 +173,7 @@
 										<span class="avatar avatar-lg brround cover-image" data-image-src="{{URL::asset('assets/img/faces/1.jpg')}}"></span>
 									</div>
 									<div>
-										<strong>Anthony</strong> New product Launching...
+										<strong>Anthony</strong> New branch Launching...
 										<div class="small text-muted">
 											5 hour ago
 										</div>
@@ -206,7 +206,7 @@
 										<span class="avatar avatar-lg brround cover-image" data-image-src="{{URL::asset('assets/img/faces/11.jpg')}}"></span>
 									</div>
 									<div>
-										<strong>Anthony</strong> New product Launching...
+										<strong>Anthony</strong> New branch Launching...
 										<div class="small text-muted">
 											5 hour ago
 										</div>

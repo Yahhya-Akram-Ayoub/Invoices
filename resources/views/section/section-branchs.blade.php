@@ -132,16 +132,16 @@
                                         data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="POST" action="{{ route('product.store') }}">
+                                    <form method="POST" action="{{ route('branch.store') }}">
                                         {{ csrf_field() }}
 
                                         <div class="form-group">
-                                            <label for="product_name">اسم المنتج</label>
-                                            <input type="text" class="form-control" id="product_name" name="product_name"
+                                            <label for="branch_name">اسم المنتج</label>
+                                            <input type="text" class="form-control" id="branch_name" name="branch_name"
                                                 placeholder=" example name">
                                         </div>
                                         <div class="form-group">
-                                            <label for="product_name">اسم القسم</label>
+                                            <label for="branch_name">اسم القسم</label>
                                             <select class="form-select form-control" aria-label="Default select example"
                                                 name="section_id" id="section_selected" required>
                                                 <option value="" selected disabled>-- Please select section --</option>
@@ -184,17 +184,17 @@
                                 </div>
                                 <div class="modal-body">
 
-                                    <form action="product/update" method="post" autocomplete="off">
+                                    <form action="branch/update" method="post" autocomplete="off">
                                         {{ method_field('patch') }}
                                         {{ csrf_field() }}
                                         <div class="form-group">
                                             <input type="hidden" name="id" id="id" value="">
                                             <label for="recipient-name" class="col-form-label">اسم المنتج:</label>
-                                            <input class="form-control" name="product_name" id="product_name" type="text">
+                                            <input class="form-control" name="branch_name" id="branch_name" type="text">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="product_name">اسم القسم</label>
+                                            <label for="branch_name">اسم القسم</label>
 
                                             <select class="form-select form-control" aria-label="Default select example"
                                                 name="section_id" id="section_selected" required>
@@ -228,13 +228,13 @@
                                     <h6 class="modal-title">حذف المنتج</h6><button aria-label="Close" class="close"
                                         data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                                 </div>
-                                <form action="product/destroy" method="post">
+                                <form action="branch/destroy" method="post">
                                     {{ method_field('delete') }}
                                     {{ csrf_field() }}
                                     <div class="modal-body">
                                         <p>هل انت متاكد من عملية الحذف ؟</p><br>
                                         <input type="hidden" name="id" id="id" value="">
-                                        <input class="form-control" name="product_name" id="product_name" type="text"
+                                        <input class="form-control" name="branch_name" id="branch_name" type="text"
                                             readonly>
                                     </div>
                                     <div class="modal-footer">
@@ -248,9 +248,9 @@
                         <!-- End delete -->
                     </div>
 
-                    <a class=" btn btn-outline-primary mr-4" data-effect="effect-scale" data-toggle="modal"
+                  @can('Add Section')  <a class=" btn btn-outline-primary mr-4" data-effect="effect-scale" data-toggle="modal"
                         href="#modaldemo8">اضافة منتج جديد</a>
-
+@endcan
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -271,25 +271,26 @@
                                     @php
                                         $count = 0;
                                     @endphp
-                                    @foreach ($products as $i)
+                                    @foreach ($branchs as $i)
 
                                         <tr>
                                             <td>{{ $count++ }}</td>
-                                            <td>{{ $i->product_name }}</td>
+                                            <td>{{ $i->branch_name }}</td>
                                             <td>{{ $i->section_id }}</td>
                                             <td>{{ $i->description }}</td>
-                                            <td> <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
+                                            <td>
+                                                @can('Modify Section') <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
                                                     data-id="{{ $i->id }}"
-                                                    data-product_name="{{ $i->product_name }}"
+                                                    data-branch_name="{{ $i->branch_name }}"
                                                     data-description="{{ $i->description }}" data-section_selected="{{ $i->section_id }}"
                                                     data-toggle="modal"
                                                     href="#exampleModal2" title="تعديل"><i class="las la-pen"></i></a>
-
-                                                <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale"
+@endcan
+                                             @can('Delete Section')   <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale"
                                                     data-id="{{ $i->id }}"
-                                                    data-product_name="{{ $i->product_name }}" data-toggle="modal"
+                                                    data-branch_name="{{ $i->branch_name }}" data-toggle="modal"
                                                     href="#modaldemo9" title="حذف"><i class="las la-trash"></i></a>
-                                            </td>
+                                         @endcan   </td>
                                         </tr>
                                     @endforeach
 
@@ -367,13 +368,13 @@
                                     @php
                                         $count = 0;
                                     @endphp
-                                    @foreach ($products as $i)
+                                    @foreach ($branchs as $i)
                                         @php
                                             $count++;
                                         @endphp
                                         <tr>
                                             <td>{{ $count }}</td>
-                                            <td>{{ $i->product_name }}</td>
+                                            <td>{{ $i->branch_name }}</td>
                                             <td>{{ $i->description }}</td>
                                             <td>{{ $i->section_id }}</td>
                                         </tr>
@@ -421,12 +422,12 @@
         $('#exampleModal2').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
             var id = button.data('id')
-            var product_name = button.data('product_name')
+            var branch_name = button.data('branch_name')
             var description = button.data('description')
             var section_selected = button.data('section_selected')
             var modal = $(this)
             modal.find('.modal-body #id').val(id);
-            modal.find('.modal-body #product_name').val(product_name);
+            modal.find('.modal-body #branch_name').val(branch_name);
             modal.find('.modal-body #description').val(description);
             modal.find('.modal-body #section_selected').val(section_selected);
         })
@@ -437,10 +438,10 @@
         $('#modaldemo9').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
             var id = button.data('id')
-            var product_name = button.data('product_name')
+            var branch_name = button.data('branch_name')
             var modal = $(this)
             modal.find('.modal-body #id').val(id);
-            modal.find('.modal-body #product_name').val(product_name);
+            modal.find('.modal-body #branch_name').val(branch_name);
         })
 
     </script>

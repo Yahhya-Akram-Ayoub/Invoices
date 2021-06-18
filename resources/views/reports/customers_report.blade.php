@@ -75,7 +75,7 @@
 
                         <div class="col-lg-3 mg-t-20 mg-lg-t-0">
                             <label for="inputName" class="control-label">المنتج</label>
-                            <select id="product" name="product" class="form-control select2">
+                            <select id="branch" name="branch" class="form-control select2">
                             </select>
                         </div>
 
@@ -143,7 +143,7 @@
                                         <td>{{ $invoice->invoice_number }} </td>
                                         <td>{{ $invoice->invoice_Date }}</td>
                                         <td>{{ $invoice->Due_date }}</td>
-                                        <td>{{ $invoice->product }}</td>
+                                        <td>{{ $invoice->branch }}</td>
                                         <td><a
                                                 href="{{ url('InvoicesDetails') }}/{{ $invoice->id }}">{{ $invoice->section->section_name }}</a>
                                         </td>
@@ -230,17 +230,17 @@
     $(document).ready(function() {
         $('select[name="Section"]').on('change', function() {
             var SectionId = $(this).val();
-        $('select[name="product"]').empty();
+        $('select[name="branch"]').empty();
             if (SectionId) {
                 $.ajax({
-                    url: '../get_product/' + SectionId,
+                    url: '../get_branch/' + SectionId,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        // $('select[name="product"]').empty();s
+                        // $('select[name="branch"]').empty();s
                         $.each(data, function(key, value) {
 
-                            $('select[name="product"]').append('<option value="' +
+                            $('select[name="branch"]').append('<option value="' +
                             value + '">' + value + '</option>');
                         });
                     },

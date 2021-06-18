@@ -17,14 +17,13 @@ class CreateInvoicesDetailsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('invoice_id');
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
-            $table->string('invoice_number');
-            // هذه البيانات مكررة من جدول ال الفواتير 4 اعمدة
-            $table->string('product');
-            $table->string('section');
-            $table->string('status',50)->default('غير مدفوعة');
-            $table->string('value_status')->default(1);
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->bigInteger('amount_paid');
             $table->string('note')->nullable();
-            $table->string('user',50);
+
             $table->timestamps();
         });
     }

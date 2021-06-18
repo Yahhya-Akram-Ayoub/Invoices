@@ -91,9 +91,9 @@ class reportController extends Controller
     }
     public function search_customers_report(Request $request)
     {
-        if (!empty($request->product) && !empty($request->Section) && empty($request->start_at) && empty($request->end_at)) {
+        if (!empty($request->branch) && !empty($request->Section) && empty($request->start_at) && empty($request->end_at)) {
 
-            $invoices = invoices::where('section_id', $request->Section)->where('product_id', $request->product)->get();
+            $invoices = invoices::where('section_id', $request->Section)->where('branch_id', $request->branch)->get();
             $sections = Section::all();
 
 
@@ -103,7 +103,7 @@ class reportController extends Controller
 
             $start_at = date($request->start_at);
             $end_at = date($request->end_at);
-            $invoices = invoices::whereBetween('invoive_date', [$start_at, $end_at])->where('section_id', '=', $request->Section)->where('product_id', '=', $request->product)->get();
+            $invoices = invoices::whereBetween('invoive_date', [$start_at, $end_at])->where('section_id', '=', $request->Section)->where('branch_id', '=', $request->branch)->get();
             $sections = Section::all();
 
             return view('reports.customers_report', compact('sections', 'end_at', 'start_at'))->withDetails($invoices);

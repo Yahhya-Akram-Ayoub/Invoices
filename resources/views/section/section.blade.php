@@ -224,10 +224,10 @@
 
                         <!-- End delete -->
                     </div>
-
+@can('Add Branch')
                     <a class=" btn btn-outline-primary mr-4" data-effect="effect-scale" data-toggle="modal"
                     href="#modaldemo8">اضافة قسم جديد</a>
-
+@endcan
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -253,16 +253,20 @@
                                             <td>{{ $count++ }}</td>
                                             <td>{{ $i->section_name }}</td>
                                             <td>{{ $i->user->name }}</td>
-                                            <td> <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
+                                            <td>
+                                                @can('Modify branch')
+                                                 <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
                                                     data-id="{{ $i->id }}"
                                                     data-section_name="{{ $i->section_name }}"
                                                     data-description="{{ $i->description }}" data-toggle="modal"
                                                     href="#exampleModal2" title="تعديل"><i class="las la-pen"></i></a>
-
+                                                    @endcan
+                                                @can('Delete Branch')
                                                 <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale"
                                                     data-id="{{ $i->id }}"
                                                     data-section_name="{{ $i->section_name }}" data-toggle="modal"
                                                     href="#modaldemo9" title="حذف"><i class="las la-trash"></i></a>
+                                                    @endcan
                                             </td>
                                         </tr>
                                     @endforeach

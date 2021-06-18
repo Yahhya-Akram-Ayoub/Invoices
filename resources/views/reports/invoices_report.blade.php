@@ -162,7 +162,7 @@
                                         <th class="border-bottom-0">{{ $invoice->invoice_number }}</th>
                                         <th class="border-bottom-0">{{ $invoice->invoive_date }}</th>
                                         <th class="border-bottom-0">{{ $invoice->due_date }}</th>
-                                        <th class="border-bottom-0">{{ $invoice->product_id }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->branch_id }}</th>
                                        <th class="border-bottom-0">{{ $invoice->section_id }}</th>
                                         <th class="border-bottom-0">{{ $invoice->discount }}</th>
                                         <th class="border-bottom-0">{{ $invoice->rate_vat }}</td>

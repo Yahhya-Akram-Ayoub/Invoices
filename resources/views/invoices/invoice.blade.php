@@ -88,8 +88,8 @@
         <div class="col-xl-12">
             <div class="card mg-b-20">
                 <div class="card-header pb-0">
-                        <a href="invoices/create" type="button" class="btn btn-primary">اضافة فاتورة </a>
-                        <a href="export" type="button" class="btn btn-primary"> Export </a>
+                       @can('Add invoice') <a href="invoices/create" type="button" class="btn btn-primary">اضافة فاتورة </a>@endcan
+                       @can('Export EXCEL') <a href="export" type="button" class="btn btn-primary"> Export </a>@endcan
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -120,7 +120,7 @@
                                         <th class="border-bottom-0">{{ $i->invoice_number }}</th>
                                         <th class="border-bottom-0">{{ $i->invoive_date }}</th>
                                         <th class="border-bottom-0">{{ $i->due_date }}</th>
-                                        <th class="border-bottom-0">{{ $i->product_id }}</th>
+                                        <th class="border-bottom-0">{{ $i->branch_id }}</th>
                                         <th class="border-bottom-0">{{ $i->section_id }}</th>
                                         <th class="border-bottom-0">{{ $i->discount }}</th>
                                         <th class="border-bottom-0">{{ $i->total }}</th>
@@ -132,9 +132,9 @@
                                                     {{ $i->status }}
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a href="show_pay/{{ $i->id }}" class=" dropdown-item"><i
+                                                    @can('Change paid status')<a href="show_pay/{{ $i->id }}" class=" dropdown-item"><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
-                                                        تعديل</a>
+                                                        تعديل</a>@endcan
                                                 </div>
                                             </div>
                                         </th>
@@ -150,22 +150,22 @@
                                                     <a href="showInvoices/{{ $i->id }}" class=" dropdown-item"><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
                                                         عرض</a>
-                                                    <a href="edit/{{ $i->id }}" class=" dropdown-item"><i
+                                                        @can('Modify invoice')<a href="edit/{{ $i->id }}" class=" dropdown-item"><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
-                                                        تعديل</a>
-                                                    <a class="dropdown-item" id="delete_btn_id" name="delete_btn_id"
+                                                        تعديل</a>@endcan
+                                                   @can('Delete invoice') <a class="dropdown-item" id="delete_btn_id" name="delete_btn_id"
                                                         data-toggle="modal" data-target="#deleteModal"
                                                         data-id="{{ $i->id }}"><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
-                                                        حذف</a>
-                                                        <a class="dropdown-item" id="archived_btn_id" name="archived_btn_id"
+                                                        حذف</a>@endcan
+                                                        @can('Archive invoice') <a class="dropdown-item" id="archived_btn_id" name="archived_btn_id"
                                                         data-toggle="modal" data-target="#archivedModal"
                                                         data-id="{{ $i->id }}" ><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
-                                                        ارشفة</a>
-                                                        <a class="dropdown-item" href="print/{{ $i->id }}" ><i
+                                                        ارشفة</a>@endcan
+                                                        @can('Print invoice')  <a class="dropdown-item" href="print/{{ $i->id }}" ><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
-                                                        طباعة </a>
+                                                        طباعة </a>@endcan
 
                                                 </div>
                                             </div>
@@ -216,9 +216,8 @@
                 <h6 class="modal-title">حذف المنتج</h6><button aria-label="Close" class="close" data-dismiss="modal"
                     type="button"><span aria-hidden="true">&times;</span></button>
             </div>
-            <form action="invoices/destroy" method="post">
-                {{ method_field('delete') }}
-                {{ csrf_field() }}
+            <form action="{{url('archive')}}" method="post">
+                           @csrf
                 <div class="modal-body">
                     <p>هل انت متاكد من عملية الارشفة ؟</p><br>
 
