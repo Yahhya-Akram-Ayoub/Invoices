@@ -24,13 +24,15 @@ use App\Http\Controllers\InvoicesAttachmentController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes(['register' => false]);
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => ['auth']], function () {
+
+
+Route::get('/home' , [HomeController::class, 'index'])->name('home');
+Route::get('/' , [HomeController::class, 'index'])->name('home');
+
+
 Route::post('/updateDetails', [InvoicesController::class, 'updateDetails']);
 
 Route::resource('/invoices', InvoicesController::class);
@@ -74,7 +76,10 @@ Route::get('/download_file/{invoice_number}/{attachment_name}', [InvoicesAttachm
 Route::get('/export', [InvoicesController::class, 'export']);
 
 
-Route::group(['middleware' => ['auth']], function () {
+// Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
+// });
+
+
 });

@@ -263,7 +263,9 @@
 										<div class="d-flex wd-100p">
 											<div class="main-img-user"><img alt="" src="{{URL::asset('assets/img/faces/6.jpg')}}" class=""></div>
 											<div class="mr-3 my-auto">
-												<h6>{{Auth::user()->name}}</h6><span>{{Auth::user()->email}}</span>
+                                                <h6>{{ !empty(Auth::user()->name) ? Auth::user()->name : 'User name'}}</h6>
+                                                <span>{{ !empty(Auth::user()->email) ?Auth::user()->email :'email@me.com'}}r</span>
+
 											</div>
 										</div>
 									</div>
