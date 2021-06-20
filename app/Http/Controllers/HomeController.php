@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\invoices;
-use GrahamCampbell\ResultType\Result;
 use Illuminate\Http\Request;
+use GrahamCampbell\ResultType\Result;
+
 
 class HomeController extends Controller
 {
@@ -23,9 +25,9 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        $geoIpInfo =  geoip()->getLocation( geoip()->getClientIP() )->toArray();
         $data =  $this->getData();
 
         $chartjs = app()->chartjs
@@ -35,10 +37,17 @@ class HomeController extends Controller
             ->labels(['Unpaid Invoices', 'Partially Unpaid Invoices', 'Paid Invoices'])
             ->datasets([
                 [
-                    "label" => [ "Unpaid Invoices","Paid Invoices" ,"Paid Invoices"],
-                    'backgroundColor' => ['rgba(255, 0, 0, 0.6)', 'rgba(255, 0, 255, 0.6)', 'rgba(0, 255, 255, 0.6)'],
-
-                    'data' => [$data['UnpaidPercent'], $data['PartiallyPercent'], $data['PaidPercent']]
+                    "label" => [ "Unpaid Invoices"],
+                    'backgroundColor' => ['rgba(255, 0, 0, 0.6)'],
+                    'data' => [$data['UnpaidPercent']]
+                ], [
+                    "label" => ["Paid Invoices" ],
+                    'backgroundColor' => ['rgba(255, 0, 255, 0.6)'],
+                    'data' => [ $data['PartiallyPercent']]
+                ], [
+                    "label" => [ "Paid Invoices"],
+                    'backgroundColor' => [ 'rgba(0, 255, 255, 0.6)'],
+                    'data' => [ $data['PaidPercent']]
                 ]
 
             ])
@@ -82,7 +91,7 @@ class HomeController extends Controller
 
 
 
-        return view('home', compact('chartjs', 'chartjs2', 'data'));
+        return view('home', compact('chartjs', 'chartjs2', 'data','geoIpInfo'));
     }
 
     public function getData()

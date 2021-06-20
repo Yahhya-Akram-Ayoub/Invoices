@@ -177,8 +177,8 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
 
-        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class
-
+        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
+        \Torann\GeoIP\GeoIPServiceProvider::class,
 
     ],
 
@@ -235,6 +235,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
     ],
 
 ];
