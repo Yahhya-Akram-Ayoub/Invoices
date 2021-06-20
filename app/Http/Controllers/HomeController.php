@@ -29,14 +29,15 @@ class HomeController extends Controller
         $data =  $this->getData();
 
         $chartjs = app()->chartjs
-            ->name('barChartTest')
+            ->name('barChart')
             ->type('bar')
             ->size(['width' => 450, 'height' => 280])
             ->labels(['Unpaid Invoices', 'Partially Unpaid Invoices', 'Paid Invoices'])
             ->datasets([
                 [
-                    // "label" => [ "Unpaid Invoices","Paid Invoices" ,"Paid Invoices"],
-                    'backgroundColor' => ['rgba(255, 0, 0, 0.4)', 'rgba(255, 0, 255, 0.4)', 'rgba(0, 255, 255, 0.4)'],
+                    "label" => [ "Unpaid Invoices","Paid Invoices" ,"Paid Invoices"],
+                    'backgroundColor' => ['rgba(255, 0, 0, 0.6)', 'rgba(255, 0, 255, 0.6)', 'rgba(0, 255, 255, 0.6)'],
+
                     'data' => [$data['UnpaidPercent'], $data['PartiallyPercent'], $data['PaidPercent']]
                 ]
 
@@ -58,16 +59,19 @@ class HomeController extends Controller
 
         // ExampleController.php
 
+
+        $Unpaid =  $data['AllAmount'] - $data['paidAmount'];
+        $paid =     $data['paidAmount'];
         $chartjs2 = app()->chartjs
-            ->name('pieChartTest')
+            ->name('pieChart')
             ->type('pie')
             ->size(['width' => 400, 'height' => 250])
-            ->labels(['Label x', 'Label y'])
+            ->labels(['$'. $Unpaid.' Unpaid Amount','$'. $paid. ' paid Amount'])
             ->datasets([
                 [
                     'backgroundColor' => ['#FF6384', '#36A2EB'],
                     'hoverBackgroundColor' => ['#FF6384', '#36A2EB'],
-                    'data' => [69, 59]
+                    'data' => [$Unpaid, $paid]
                 ]
             ])
             ->options([]);
@@ -78,7 +82,7 @@ class HomeController extends Controller
 
 
 
-        return view('home', compact('chartjs','chartjs2', 'data'));
+        return view('home', compact('chartjs', 'chartjs2', 'data'));
     }
 
     public function getData()
