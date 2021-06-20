@@ -159,8 +159,9 @@
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label" >المبلغ االمدفوع</label>
-                                <input type="number" class="form-control" id="amount_paid"  max="{{$invoice->total - $details->sum('amount_paid')}}" name="amount_paid" required
+                                <input type="number" class="form-control" id="amount_paid"  name="amount_paid" required
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    <small class=""> المبلغ المطلوب : {{$invoice->total_amount - $invoice->total_paid }}</small>
                             </div>
                             <div class="col">
                                 <label>تاريخ الدفع</label>

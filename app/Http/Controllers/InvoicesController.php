@@ -204,12 +204,20 @@ class invoicesController extends Controller
 
         invoices_details::create([
             'invoice_id' => $request->id,
-            'invoice_number' => $request->invoice_number,
             'amount_paid' => $request->amount_paid,
             'note' => $request->note,
             'user_id' => (Auth::user()->id),
         ]);
 
+        $invpice = invoices::find($request->id);
+        $invpice->total_paid =  $invpice->total_paid  + $request->amount_paid;
+
+        if($invpice->total_paid >= $invpice->total_amount  ){
+            $invpice->value_status = 2 ;
+        }else if($invpice->total_paid > 0){
+            $invpice->value_status = 1 ;
+        }
+        $invpice->save();
         return back();
     }
 
@@ -235,7 +243,7 @@ class invoicesController extends Controller
     }
     public function archived_invoiced()
     {
-        $invoices = invoices::where('archive' , '=' , 1)->get();
+        $invoices = invoices::where('archive', '=', 1)->get();
         return view('invoices.archived_invoiced', compact('invoices'));
     }
     public function restore(Request $request)
