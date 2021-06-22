@@ -12,7 +12,7 @@
 @endsection
 
 @section('title')
-    الفواتير
+ الفواتير المؤرشفة
 @stop
 
 @section('page-header')
@@ -43,8 +43,10 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">Pages</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    Empty</span>
+                <h4 class="content-title mb-0 my-auto">الفواتير
+                </h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
+                    الفواتير المؤرشفة
+</span>
             </div>
         </div>
         <div class="d-flex my-xl-auto right-content">
@@ -89,21 +91,19 @@
             <div class="card mg-b-20">
 
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="example" class="table key-buttons text-md-nowrap">
+                    <div class="table-responsive" style="height:460px ">
+                        <table id="table_invoices" class="table  text-md-nowrap" style="text-align:center;" >
                             <thead>
                                 <tr>
                                     <th class="border-bottom-0">#</th>
-                                    <th class="border-bottom-0">رقم الفاتورة</th>
-                                    <th class="border-bottom-0">تاريخ الفاتورة</th>
-                                    <th class="border-bottom-0">تاريخ الاستحقاق</th>
-                                    <th class="border-bottom-0">المنتج</th>
-                                    <th class="border-bottom-0">القسم</th>
-                                    <th class="border-bottom-0">الخصم</th>
-                                    <th class="border-bottom-0">الاجمالي</th>
-
-                                    <th class="border-bottom-0">الحالة</th>
-                                    <th class="border-bottom-0">العمليات</th>
+                                    <th class="border-bottom-0">{{__('invoice.number')}}</th>
+                                    <th class="border-bottom-0">{{__('invoice.date')}}</th>
+                                    <th class="border-bottom-0">{{__('invoice.due_date')}}</th>
+                                    <th class="border-bottom-0">{{__('invoice.section')}}</th>
+                                    <th class="border-bottom-0">{{__('invoice.branch')}}</th>
+                                    <th class="border-bottom-0">{{__('invoice.total')}}</th>
+                                    <th class="border-bottom-0">{{__('invoice.status')}}</th>
+                                    <th class="border-bottom-0">{{__('invoice.options')}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -115,34 +115,36 @@
                                     <tr>
                                         <th class="border-bottom-0">{{ $count++ }}</th>
                                         <th class="border-bottom-0">{{ $i->invoice_number }}</th>
-                                        <th class="border-bottom-0">{{ $i->invoive_date }}</th>
+                                        <th class="border-bottom-0">{{ $i->invoice_date }}</th>
                                         <th class="border-bottom-0">{{ $i->due_date }}</th>
-                                        <th class="border-bottom-0">{{ $i->branch_id }}</th>
-                                        <th class="border-bottom-0">{{ $i->section_id }}</th>
-                                        <th class="border-bottom-0">{{ $i->discount }}</th>
-                                        <th class="border-bottom-0">{{ $i->total }}</th>
+                                        <th class="border-bottom-0">{{ $i->section->section_name }}</th>
+                                        <th class="border-bottom-0">{{ $i->branch->branch_name }}</th>
+                                        <th class="border-bottom-0">{{ $i->total_amount }}</th>
 
                                         <th class="border-bottom-0">
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    {{ $i->status }}
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a href="show_pay/{{ $i->id }}" class=" dropdown-item"><i
-                                                            class=" typcn typcn-arrow-back-outline"></i>
-                                                        تعديل</a>
-                                                </div>
+
+                                                    @if ($i->value_status == 2)
+                                                    <span class="badge badge-pill badge-success">{{__('invoice.partially')}}</span>
+
+                                                @elseif($i->value_status ==0)
+                                                    <span class="badge badge-pill badge-danger">{{ __('invoice.paid') }}</span>
+
+                                                @else
+                                                  <span class="badge badge-pill badge-warning">{{__('invoice.unpaid') }}</span>
+
+                                                @endif
+
                                             </div>
                                         </th>
                                         {{-- <th class="border-bottom-0"></th> --}}
                                         <th>
                                             <!-- Example single danger button -->
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-success dropdown-toggle"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    العمليات
-                                                </button>
+                                                <a type="button" class=" dropdown-toggle"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="badge badge-pill badge-info"> العمليات</span>
+                                                         </a>
                                                 <div class="dropdown-menu">
                                                     <a href="showInvoices/{{ $i->id }}" class=" dropdown-item"><i
                                                             class=" typcn typcn-arrow-back-outline"></i>
@@ -166,6 +168,7 @@
                                                 </div>
                                             </div>
                                         </th>
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -186,13 +189,14 @@
                         <h6 class="modal-title">حذف المنتج</h6><button aria-label="Close" class="close" data-dismiss="modal"
                             type="button"><span aria-hidden="true">&times;</span></button>
                     </div>
-                    <form action="/destroyWithTrashed" method="post">
-
+                    <form action="invoices/destroy" method="post">
+                        {{ method_field('delete') }}
                         {{ csrf_field() }}
                         <div class="modal-body">
                             <p>هل انت متاكد من عملية الحذف ؟</p><br>
 
-                            <input class="form-control" name="invoice_id" id="invoice_id" type="text" readonly hidden>
+                             <input class="form-control" name="invoice_id" id="invoice_id" type="text" readonly hidden>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>

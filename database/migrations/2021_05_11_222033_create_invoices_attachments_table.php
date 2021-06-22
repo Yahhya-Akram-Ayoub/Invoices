@@ -20,8 +20,8 @@ class CreateInvoicesAttachmentsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->unsignedBigInteger('invoice_id')->nullable();
-            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->unsignedBigInteger('invoices_id')->nullable();
+            $table->foreign('invoices_id')->references('id')->on('invoices')->onDelete('cascade');
 
             $table->timestamps();
         });

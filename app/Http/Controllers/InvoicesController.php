@@ -25,7 +25,8 @@ class invoicesController extends Controller
      */
     public function index()
     {
-        $invoices = invoices::all();
+        $invoices = invoices::where('archive', '=', 0)->get();
+        // return $invoices;
         return view('invoices.invoice', compact('invoices'));
     }
 
@@ -54,12 +55,12 @@ class invoicesController extends Controller
             'due_date' => $request->Due_date,
             'branch_id' => $request->branch,
             'section_id' => $request->Section,
-            'amount_collection' => $request->Amount_collection,
-            'amount_commission' => $request->Amount_Commission,
-            'discount' => $request->Discount,
-            'value_vat' => $request->Value_VAT,
-            'rate_vat' => $request->Rate_VAT,
-            'total_amount' => $request->Total,
+            'amount_collection' => $request->amount_collection,
+            'amount_commission' => $request->amount_commission,
+            'discount' => $request->discount,
+            'rate_vat' => $request->rate_vat,
+            'value_vat' => $request->value_vat,
+            'total_amount' => $request->total_amount,
             'note' => $request->note,
             'user_id' => Auth::user()->id
         ]);
@@ -67,7 +68,7 @@ class invoicesController extends Controller
         $invoice_id = invoices::latest()->first()->id;
 
         invoices_details::create([
-            'invoice_id' => $invoice_id,
+            'invoices_id' => $invoice_id,
             'amount_paid' => 0,
             'note' => $request->note,
             'user_id' => Auth::user()->id,
@@ -120,21 +121,32 @@ class invoicesController extends Controller
      */
     public function update(Request $request)
     {
+        // for get old invoice number and get new from request
+        $invoice = invoices::find($request->id);
+
         invoices::where('id', $request->id)->update([
             'invoice_number' => $request->invoice_number,
             'invoice_date' => $request->invoice_Date,
             'due_date' => $request->Due_date,
             'branch_id' => $request->branch,
             'section_id' => $request->Section,
-            'amount_collection' => $request->Amount_collection,
-            'amount_commission' => $request->Amount_Commission,
-            'discount' => $request->Discount,
-            'value_vat' => $request->Value_VAT,
-            'rate_vat' => $request->Rate_VAT,
-            'total_amount' => $request->Total,
+            'amount_collection' => $request->amount_collection,
+            'amount_commission' => $request->amount_commission,
+            'discount' => $request->discount,
+            'rate_vat' => $request->rate_vat,
+            'value_vat' => $request->value_vat,
+            'total_amount' => $request->total_amount,
             'note' => $request->note,
             'user_id' => Auth::user()->id
         ]);
+
+
+
+        if (isset($invoice->invoices_attachments)) {
+            rename(public_path('Attachments/' . $invoice->invoice_number) ,  public_path('Attachments/' .$request->invoice_number)) ;
+            // Storage::disk('public_uploads')->deleteDirectory($invoice->invoice_number);
+        }
+
 
         return back();
     }
@@ -148,27 +160,9 @@ class invoicesController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->invoice_id;
-        $page_id = $request->page_id;
-
         $invoice = invoices::where('id', $id)->first();
-        if ($page_id == 1) {
-            //نحذف المرفقات قبل الفاتورة عشان نقدر نوصل للملف تبعهم لان بس حذفن الفاتورة رح ينحذف المرفقات واسماء الملفات
-            // $attachment = invoices_attachment::where('invoice_id', $id)->get();
-            $attachment = invoices_attachment::where('invoice_id', $id)->first();
-            if (isset($attachment)) {
-
-                // foreach ($attachment as $item) {
-                // Storage::disk('public_uploads')->deleteDirectory($item->invoice_number);
-                Storage::disk('public_uploads')->deleteDirectory($attachment->invoice_number);
-                // }
-            }
-
-            $invoice->forceDelete();
-            session()->flash('delete_invoice');
-        } else {
-            $invoice->delete();
-            session()->flash('archived_invoice');
-        }
+        $invoice->delete();
+        session()->flash('archived_invoice');
         return back();
     }
 
@@ -189,7 +183,7 @@ class invoicesController extends Controller
                 [
                     'file_name' =>  $fileName,
                     'user_id' => Auth::user()->id,
-                    'invoice_id' => $request->invoice_id
+                    'invoices_id' => $request->invoice_id
                 ]
             );
 
@@ -203,22 +197,22 @@ class invoicesController extends Controller
     {
 
         invoices_details::create([
-            'invoice_id' => $request->id,
+            'invoices_id' => $request->id,
             'amount_paid' => $request->amount_paid,
             'note' => $request->note,
             'user_id' => (Auth::user()->id),
         ]);
 
         $invpice = invoices::find($request->id);
-        $invpice->total_paid =  $invpice->total_paid  + $request->amount_paid;
+        $invpice->total_paid += $request->amount_paid;
 
-        if($invpice->total_paid >= $invpice->total_amount  ){
-            $invpice->value_status = 2 ;
-        }else if($invpice->total_paid > 0){
-            $invpice->value_status = 1 ;
+        if ($invpice->total_paid >= $invpice->total_amount) {
+            $invpice->value_status = 2;
+        } else if ($invpice->total_paid > 0) {
+            $invpice->value_status = 1;
         }
         $invpice->save();
-        return back();
+        return $this->index();
     }
 
     public function invoices_paid()
@@ -244,6 +238,7 @@ class invoicesController extends Controller
     public function archived_invoiced()
     {
         $invoices = invoices::where('archive', '=', 1)->get();
+        // return $invoices;
         return view('invoices.archived_invoiced', compact('invoices'));
     }
     public function restore(Request $request)
@@ -257,6 +252,11 @@ class invoicesController extends Controller
     {
         $id = $request->invoice_id;
         $invoice = invoices::withTrashed()->where('id', $id)->first();
+
+        if (isset($invoice->invoices_attachments)) {
+            Storage::disk('public_uploads')->deleteDirectory($invoice->invoice_number);
+        }
+
         $invoice->forceDelete();
         session()->flash('delete_invoice');
         return back();
@@ -265,7 +265,6 @@ class invoicesController extends Controller
     {
 
         $invoice = invoices::find($id);
-        $details = invoices_details::where('invoice_id', $id)->get();
         return view('invoices.print_invoice', compact('invoice', 'details'));
     }
     public function export()

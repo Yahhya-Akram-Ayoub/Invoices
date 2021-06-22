@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ URL::asset('assets/plugins/telephoneinput/telephoneinput-rtl.css') }}">
 @endsection
 @section('title')
-    اضافة فاتورة
+    تعديل تفاصيل الفاتورة
 @stop
 
 @section('page-header')

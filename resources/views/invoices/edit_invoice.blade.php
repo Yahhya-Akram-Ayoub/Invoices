@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ URL::asset('assets/plugins/telephoneinput/telephoneinput-rtl.css') }}">
 @endsection
 @section('title')
-    اضافة فاتورة
+    تعديل فاتورة
 @stop
 
 @section('page-header')
@@ -44,8 +44,9 @@
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="invoices/update " method="post" enctype="multipart/form-data" autocomplete="off">
+                    <form action="../invoices/update " method="POST" id="form" autocomplete="off">
                         {{ csrf_field() }}
+                        @method('PUT')
                         {{-- 1 --}}
 
                         <input type="text" value="{{ $invoice->id }}" name="id" hidden>
@@ -59,7 +60,7 @@
                             <div class="col">
                                 <label>تاريخ الفاتورة</label>
                                 <input class="form-control fc-datepicker" name="invoice_Date" placeholder="YYYY-MM-DD"
-                                    value="{{ $invoice->invoive_date }}" type="text" value="{{ date('Y-m-d') }}"
+                                    value="{{ $invoice->invoice_date }}" type="text" value="{{ date('Y-m-d') }}"
                                     required>
                             </div>
 
@@ -94,7 +95,7 @@
 
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ التحصيل</label>
-                                <input type="text" class="form-control" id="inputName2" name="Amount_collection"
+                                <input type="text" class="form-control calc" id="amount_collection" name="amount_collection"
                                     value="{{ $invoice->amount_collection }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                             </div>
@@ -107,8 +108,8 @@
 
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ العمولة</label>
-                                <input type="text" class="form-control form-control-lg" id="Amount_Commission"
-                                    value="{{ $invoice->amount_collection }}" name="amount_commission"
+                                <input type="text" class="form-control calc form-control-lg" id="amount_commission"
+                                    value="{{ $invoice->amount_commission }}" name="amount_commission"
                                     title="يرجي ادخال مبلغ العمولة "
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                     required>
@@ -116,15 +117,15 @@
 
                             <div class="col">
                                 <label for="inputName" class="control-label">الخصم</label>
-                                <input type="text" class="form-control form-control-lg" id="Discount" name="Discount"
+                                <input type="text" class="form-control calc form-control-lg" id="discount" name="discount"
                                     title="يرجي ادخال مبلغ الخصم " value="{{ $invoice->discount }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-                                    value=0 required>
+                                   required>
                             </div>
 
                             <div class="col">
                                 <label for="inputName" class="control-label">نسبة ضريبة القيمة المضافة</label>
-                                <select name="Rate_VAT" id="Rate_VAT" class="form-control" onchange="myFunction()">
+                                <select name="rate_vat" id="rate_vat" class="form-control calc" >
                                     <!--placeholder-->
                                     <option value="" selected disabled>حدد نسبة الضريبة</option>
                                     <option value="5%" {{ $invoice->rate_vat == '5%' ? 'selected' : '' }}>5%</option>
@@ -139,12 +140,12 @@
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">قيمة ضريبة القيمة المضافة</label>
-                                <input type="text" class="form-control" id="Value_VAT" name="Value_VAT" readonly>
+                                <input type="text" class="form-control" id="value_vat" name="value_vat" readonly>
                             </div>
 
                             <div class="col">
                                 <label for="inputName" class="control-label">الاجمالي شامل الضريبة</label>
-                                <input type="text" class="form-control" id="Total" name="Total" readonly>
+                                <input type="text"  class="form-control" id="total_amount" name="total_amount" readonly>
                             </div>
                         </div>
 
@@ -180,7 +181,7 @@
                                             @endphp
 
 
-                                            @foreach ($attachment as $item)
+                                            @foreach ($invoice->invoices_attachments as $item)
                                                 <tr>
                                                     <th>{{ $x++ }}</th>
                                                     <th>{{ $item->file_name }}</th>
@@ -207,20 +208,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-12">
-                            <button type="button" class="btn btn-primary"
-                                onclick="document.getElementById('pic').click()">اضافة ملف</button>
-                            <input type="file" name="pic" id="pic" style="display:none" class="dropify"
-                                accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" />
-                        </div><br>
+                    </form>
+                        @if( empty($invoice->deleted_at)  )
+                        @can('Add Attachment')
+                            <form action="../add-attachment" method="POST" id="add_form" enctype="multipart/form-data">
+                            @csrf
+                            <div class="custom-file">
+                                <input type="file" name="pic" id="pic" class="custom-file-input"
+                                    accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" onchange="this.form.submit();" hidden/>
+                                <a class="btn btn-sm btn-info" onclick="document.getElementById('pic').click()">Choose file</a>
+                                <input type="hidden" id="invoice_id" name="invoice_id" value="{{ $invoice->id }}">
+                                <input type="hidden" id="invoice_number" name="invoice_number"
+                                    value="{{ $invoice->invoice_number }}">
+                            </div>
+                        </form>
+                          @endcan
+                        @endif
 
 
                         <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary">حفظ البيانات</button>
+                            <button type="submit" class="btn btn-primary" onclick="document.getElementById('form').submit()">حفظ البيانات</button>
                         </div>
 
 
-                    </form>
+
                 </div>
             </div>
         </div>
@@ -292,52 +303,35 @@
 
         $(document).ready(function() {
             $('select[name="Section"]').change(getSections).change();
+            $('.calc').on('change', function() { myFunction();  });
         });
         getSections();
 
+
     </script>
 
 
     <script>
-        function myFunction() {
-            var Amount_Commission = parseFloat(document.getElementById("Amount_Commission").value);
-            var Discount = parseFloat(document.getElementById("Discount").value);
-            var Rate_VAT = parseFloat(document.getElementById("Rate_VAT").value);
-            var Value_VAT = parseFloat(document.getElementById("Value_VAT").value);
-            var Amount_Commission2 = Amount_Commission - Discount;
-            if (typeof Amount_Commission === 'undefined' || !Amount_Commission) {
-                alert('يرجي ادخال مبلغ العمولة ');
-            } else {
-                var intResults = Amount_Commission2 * Rate_VAT / 100;
+       function myFunction() {
+            var Amount_Commission = parseFloat(document.getElementById("amount_commission").value);
+            Amount_Commission= Amount_Commission ? Amount_Commission : 0;
+            var discount = parseFloat(document.getElementById("discount").value);
+            discount = discount? discount:0;
+            var rate_vat = parseFloat(document.getElementById("rate_vat").value);
+            rate_vat = rate_vat ? rate_vat : 0;
+
+            var Amount_Commission2 = Amount_Commission - discount;
+                var intResults = Amount_Commission2 * rate_vat / 100;
                 var intResults2 = parseFloat(intResults + Amount_Commission2);
                 sumq = parseFloat(intResults).toFixed(2);
                 sumt = parseFloat(intResults2).toFixed(2);
-                document.getElementById("Value_VAT").value = sumq;
-                document.getElementById("Total").value = sumt;
-            }
+                document.getElementById("value_vat").value = sumq ;
+                document.getElementById("total_amount").value = sumt ;
+
         }
         myFunction();
-
     </script>
 
-    <script>
-        $(document).ready(function() {
-            $('#pic').on('change', function() {
 
-                //// صع نفس زر الاضافة الي عند المرفقات وريح راسك
-                const fileList = document.getElementById("pic").value;
-                console.log(fileList);
-                alert(fileList);
-                console.log('fileList');
-
-                // $('#attachment_table').append(
-//                    ''
-                // );
-
-
-            });
-        });
-
-    </script>
 
 @endsection

@@ -43,7 +43,7 @@ Route::resource('/reports', reportController::class );
 
 Route::post('/delete-attachment', [InvoicesAttachmentController::class, 'delete']);
 Route::get('/get_branch/{id}', [branchController::class, 'getbranch']);
-Route::get('/showInvoices/{id}', [InvoicesDetailsController::class, 'show']);
+Route::get('/showInvoices/{id}/{opreation?}', [InvoicesDetailsController::class, 'show']);
 Route::get('/edit/{id}', [InvoicesDetailsController::class, 'edit']);
 Route::get('/show_pay/{id}', [InvoicesDetailsController::class, 'pay']);
 Route::post('/add-attachment', [InvoicesController::class, 'addAttachment']);

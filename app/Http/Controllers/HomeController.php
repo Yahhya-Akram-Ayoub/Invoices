@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\invoices;
+use App\Models\invoices_attachment;
 use Illuminate\Http\Request;
 use GrahamCampbell\ResultType\Result;
 
@@ -27,27 +28,33 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $geoIpInfo =  geoip()->getLocation( geoip()->getClientIP() )->toArray();
+
+
+
+
+        $geoIpInfo =  geoip()->getLocation(geoip()->getClientIP())->toArray();
+        session()->put('country', $geoIpInfo['country']);
+
         $data =  $this->getData();
 
         $chartjs = app()->chartjs
             ->name('barChart')
             ->type('bar')
             ->size(['width' => 450, 'height' => 280])
-            ->labels(['Unpaid Invoices', 'Partially Unpaid Invoices', 'Paid Invoices'])
+            ->labels(['Unpaid Invoices '.$data['UnpaidPercent'].'%', 'Partially Unpaid Invoices '.$data['PartiallyPercent'].'%' , 'Paid Invoices '.$data['PaidPercent'].'%'])
             ->datasets([
                 [
-                    "label" => [ "Unpaid Invoices"],
+                    "label" => ["Unpaid Invoices "],
                     'backgroundColor' => ['rgba(255, 0, 0, 0.6)'],
                     'data' => [$data['UnpaidPercent']]
                 ], [
-                    "label" => ["Paid Invoices" ],
+                    "label" => ["Partially Paid Invoices"],
                     'backgroundColor' => ['rgba(255, 0, 255, 0.6)'],
-                    'data' => [ $data['PartiallyPercent']]
+                    'data' => [$data['PartiallyPercent'] ]
                 ], [
-                    "label" => [ "Paid Invoices"],
-                    'backgroundColor' => [ 'rgba(0, 255, 255, 0.6)'],
-                    'data' => [ $data['PaidPercent']]
+                    "label" => ["Paid Invoices "],
+                    'backgroundColor' => ['rgba(0, 255, 255, 0.6)'],
+                    'data' => [$data['PaidPercent']]
                 ]
 
             ])
@@ -75,7 +82,7 @@ class HomeController extends Controller
             ->name('pieChart')
             ->type('pie')
             ->size(['width' => 400, 'height' => 250])
-            ->labels(['$'. $Unpaid.' Unpaid Amount','$'. $paid. ' paid Amount'])
+            ->labels(['$' . $Unpaid . ' Unpaid Amount', '$' . $paid . ' paid Amount'])
             ->datasets([
                 [
                     'backgroundColor' => ['#FF6384', '#36A2EB'],
@@ -91,7 +98,7 @@ class HomeController extends Controller
 
 
 
-        return view('home', compact('chartjs', 'chartjs2', 'data','geoIpInfo'));
+        return view('home', compact('chartjs', 'chartjs2', 'data', 'geoIpInfo'));
     }
 
     public function getData()
@@ -102,6 +109,7 @@ class HomeController extends Controller
         $PaidInvoices = invoices::where('value_status', '=', 2)->get();
 
         $countAll = $AllInvoices->count();
+        $countAll =  $countAll == 0 ? 1 : $countAll;
         $countUnpaid =  $UnpaidInvoices->count();
         $countPartially = $PartiallyPaidInvoices->count();
         $countPaid = $PaidInvoices->count();

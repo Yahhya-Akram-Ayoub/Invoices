@@ -17,7 +17,7 @@ class invoices extends Model
     protected $guarded = [];
 
 
-    public function invoices_attachment()
+    public function invoices_attachments()
     {
         return $this->hasMany(invoices_attachment::class);
     }

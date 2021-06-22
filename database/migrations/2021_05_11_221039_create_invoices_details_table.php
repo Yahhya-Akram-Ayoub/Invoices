@@ -15,8 +15,8 @@ class CreateInvoicesDetailsTable extends Migration
     {
         Schema::create('invoices_details', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('invoice_id');
-            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->unsignedBigInteger('invoices_id');
+            $table->foreign('invoices_id')->references('id')->on('invoices')->onDelete('cascade');
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

@@ -11,6 +11,7 @@
     <!--Internal  TelephoneInput css-->
     <link rel="stylesheet" href="{{ URL::asset('assets/plugins/telephoneinput/telephoneinput-rtl.css') }}">
 @endsection
+@section('title' ,'عرض الفاتورة ' )
 
 @section('content')
 
@@ -34,7 +35,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-striped mg-b-0 text-md-nowrap">
+                                        <table class="table table-striped mg-b-0 text-md-nowrap" style="text-align:center;">
                                             <tr>
                                                 <th scope="row">رقم الفاتورة</th>
                                                 <td>{{ $invoice->invoice_number }}</td>
@@ -67,11 +68,11 @@
                                                 <td>{{ $invoice->total }}</td>
                                                 <th scope="row">الحالة الحالية</th>
 
-                                                @if ($invoice->value_status == 1)
+                                                @if ($invoice->value_status == 2)
                                                     <td><span
                                                             class="badge badge-pill badge-success">{{ $invoice->status }}</span>
                                                     </td>
-                                                @elseif($invoice->value_status ==2)
+                                                @elseif($invoice->value_status == 0)
                                                     <td><span
                                                             class="badge badge-pill badge-danger">{{ $invoice->status }}</span>
                                                     </td>
@@ -111,7 +112,7 @@
                                                 <@php
                                                     $sum = 0;
                                                 @endphp
-                                                @foreach ($details as $detail)
+                                                @foreach ($invoice->invoices_details as $detail)
 
                                                     <tr>
                                                         <th>#</th>
@@ -148,8 +149,9 @@
 
 
 
-
-                            @can('Add Attachment')     <form action="../add-attachment" method="POST" id="add_form" enctype="multipart/form-data">
+                        @if( empty($invoice->deleted_at) &&  $invoice->archive == 0 )
+                            @can('Add Attachment')
+                                <form action="../add-attachment" method="POST" id="add_form" enctype="multipart/form-data">
                                 @csrf
                                 <div class="custom-file">
                                     <input type="file" name="pic" id="pic" class="custom-file-input"
@@ -160,13 +162,13 @@
                                         value="{{ $invoice->invoice_number }}">
                                 </div>
                             </form>  @endcan
-
+                            @endif
 
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
 
-                                        <table class="table table-striped mg-b-0 text-md-nowrap">
+                                        <table class="table table-striped mg-b-0 text-md-nowrap" style="text-align:center;">
                                             <thead>
                                                 <th scope="col">م</th>
                                                 <th scope="col">اسم الملف</th>
@@ -181,7 +183,7 @@
                                                 @endphp
 
 
-                                                    @foreach ($attachment as $item)
+                                                    @foreach ($invoice->invoices_attachments as $item)
                                                         <tr>
                                                             <th>{{ $x++ }}</th>
                                                             <th>{{ $item->file_name }}</th>
@@ -259,10 +261,8 @@
 @endsection
 @section('js')
     <!-- Internal Data tables -->
-    <script??? src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}">
-        </script?? ?> <script
-            src="{{ URL::asset('assets/plugins/datatable/js/dataTables.dataTables.min.js') }}">
-        </script>
+    <script? src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}">
+        </script> <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.dataTables.min.js') }}">  </script>
         <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
         <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.dataTables.min.js') }}"></script>
         <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
