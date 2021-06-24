@@ -73,13 +73,13 @@ class reportController extends Controller
         if ($rdio == 1) {
             if (!empty($request->type) && empty($request->start_at) && empty($request->end_at)) {
                 $type = $request->type;
-                $invoices = invoices::where('status', $request->type)->get();
+                $invoices = invoices::where('value_status', $request->type)->get();
                 return view('reports.invoices_report', compact('type'))->withDetails($invoices);
             } else {
                 $type = $request->type;
                 $start_at = date($request->start_at);
                 $end_at = date($request->end_at);
-                $invoices = invoices::whereBetween('invoive_date', [$start_at, $end_at])->where('status', $request->type)->get();
+                $invoices = invoices::whereBetween('invoice_date', [$start_at, $end_at])->where('value_status', $request->type)->get();
                 return view('reports.invoices_report', compact('type', 'end_at', 'start_at'))->withDetails($invoices);
             }
         } else {

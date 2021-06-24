@@ -63,8 +63,8 @@ Route::get('/markAsRead', [InvoicesController::class , 'markAsRead']);
 
 Route::get('/invoices_report', [reportController::class , 'invoices_report']);
 Route::get('/custmers_report', [reportController::class , 'custmers_report']);
-Route::post('/search_invoices_report', [reportController::class , 'search_invoices_report']);
-Route::post('/search_customers_report', [reportController::class , 'search_customers_report']);
+Route::get('/search_invoices_report', [reportController::class , 'search_invoices_report']);
+Route::get('/search_customers_report', [reportController::class , 'search_customers_report']);
 
 
 
@@ -75,6 +75,7 @@ Route::get('/download_file/{invoice_number}/{attachment_name}', [InvoicesAttachm
 
 Route::get('/export', [InvoicesController::class, 'export']);
 
+Route::get('/search/{txt}', [InvoicesController::class, 'search']);
 
 // Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);

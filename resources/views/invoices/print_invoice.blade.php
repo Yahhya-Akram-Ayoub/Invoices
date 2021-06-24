@@ -108,7 +108,17 @@
                                                     <th>{{ $detail->invoice_number }}</th>
                                                     <th>{{ $detail->branch }}</th>
                                                     <th>{{ $detail->section }}</th>
-                                                    <th>{{ $detail->value_status }}</th>
+                                                    <th>
+                                                         @if ($detail->value_status == 2)
+                                                        <span class="badge badge-pill badge-success">wweditt{{__('invoice.paid')}}</span>
+
+                                                    @elseif($detail->value_status ==0)
+                                                        <span class="badge badge-pill badge-danger">wweditt{{ __('invoice.unpaid') }}</span>
+
+                                                    @else
+                                                      <span class="badge badge-pill badge-warning">wweditt{{__('invoice.partially') }}</span>
+
+                                                    @endif</th>
                                                     <th>{{ $detail->amount_paid }}</th>
                                                     <th>{{  $sum+=$detail->amount_paid  }}</th>
                                                     <th>

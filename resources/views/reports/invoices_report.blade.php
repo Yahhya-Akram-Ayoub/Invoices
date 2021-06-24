@@ -15,7 +15,7 @@
     <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
 
 @section('title')
-    تقرير الفواتير - مورا سوفت للادارة الفواتير
+    تقرير الفواتير -  app  للادارة الفواتير
 @stop
 @endsection
 @section('page-header')
@@ -76,13 +76,12 @@
                         <div class="col-lg-3 mg-t-20 mg-lg-t-0" id="type">
                             <p class="mg-b-10">تحديد نوع الفواتير</p>
                             <select class="form-control select2" name="type"  required>
-                                <option value="{{ $type ?? 'حدد نوع الفواتير' }}" selected>
-                                    {{ $type ?? 'حدد نوع الفواتير' }}
+                                <option value="none" {{ empty($type)  ?? 'selected'  }} disabled hidden>
+                                    Select an Option
                                 </option>
-
-                                <option value="مدفوعة">الفواتير المدفوعة</option>
-                                <option value="غير مدفوعة">الفواتير الغير مدفوعة</option>
-                                <option value="مدفوعة جزئيا">الفواتير المدفوعة جزئيا</option>
+                                <option value="2" {{ !empty($type) && $type == 2 ?? 'selected'  }} >الفواتير المدفوعة</option>
+                                <option value="0" {{ !empty($type) && $type == 0 ?? 'selected'  }} >الفواتير الغير المدفوعة</option>
+                                <option value="1" {{ !empty($type) && $type ==1 ?? 'selected'  }} >الفواتير المدفوعة جزئيا</option>
 
                             </select>
                         </div><!-- col-4 -->
@@ -163,20 +162,23 @@
                                         <th class="border-bottom-0">{{ $invoice->invoive_date }}</th>
                                         <th class="border-bottom-0">{{ $invoice->due_date }}</th>
                                         <th class="border-bottom-0">{{ $invoice->branch_id }}</th>
-                                       <th class="border-bottom-0">{{ $invoice->section_id }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->section_id }}</th>
                                         <th class="border-bottom-0">{{ $invoice->discount }}</th>
                                         <th class="border-bottom-0">{{ $invoice->rate_vat }}</td>
                                             <th class="border-bottom-0">{{ $invoice->value_vat }}</td>
                                         <th class="border-bottom-0">{{ $invoice->total }}</th>
 
                                         <td>
-                                            @if ($invoice->value_vtatus == 1)
-                                                <span class="text-success">{{ $invoice->status }}</span>
-                                            @elseif($invoice->value_status == 2)
-                                                <span class="text-danger">{{ $invoice->status }}</span>
-                                            @else
-                                                <span class="text-warning">{{ $invoice->status }}</span>
-                                            @endif
+                                            @if ($invoice->value_status == 2)
+                                            <span class="badge badge-pill badge-success">{{__('invoice.paid')}}</span>
+
+                                        @elseif($invoice->value_status ==0)
+                                            <span class="badge badge-pill badge-danger">{{ __('invoice.unpaid') }}</span>
+
+                                        @else
+                                          <span class="badge badge-pill badge-warning">{{__('invoice.partially') }}</span>
+
+                                        @endif
 
                                         </td>
 

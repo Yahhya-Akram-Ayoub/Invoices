@@ -15,7 +15,7 @@
     <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
 
 @section('title')
-    تقرير العملاء - مورا سوفت للادارة الفواتير
+    تقرير العملاء -  app  للادارة الفواتير
 @stop
 @endsection
 @section('page-header')
@@ -152,13 +152,16 @@
                                         <td>{{ $invoice->Value_VAT }}</td>
                                         <td>{{ $invoice->Total }}</td>
                                         <td>
-                                            @if ($invoice->Value_Status == 1)
-                                                <span class="text-success">{{ $invoice->Status }}</span>
-                                            @elseif($invoice->Value_Status == 2)
-                                                <span class="text-danger">{{ $invoice->Status }}</span>
-                                            @else
-                                                <span class="text-warning">{{ $invoice->Status }}</span>
-                                            @endif
+                                            @if ($invoice->value_status == 2)
+                                                    <span class="badge badge-pill badge-success">{{__('invoice.paid')}}</span>
+
+                                                @elseif($invoice->value_status ==0)
+                                                    <span class="badge badge-pill badge-danger">{{ __('invoice.unpaid') }}</span>
+
+                                                @else
+                                                  <span class="badge badge-pill badge-warning">{{__('invoice.partially') }}</span>
+
+                                                @endif
 
                                         </td>
 

@@ -143,7 +143,7 @@ class invoicesController extends Controller
 
 
         if (isset($invoice->invoices_attachments)) {
-            rename(public_path('Attachments/' . $invoice->invoice_number) ,  public_path('Attachments/' .$request->invoice_number)) ;
+            rename(public_path('Attachments/' . $invoice->invoice_number),  public_path('Attachments/' . $request->invoice_number));
             // Storage::disk('public_uploads')->deleteDirectory($invoice->invoice_number);
         }
 
@@ -286,5 +286,19 @@ class invoicesController extends Controller
         auth()->user()->unreadNotifications->markAsRead();
 
         return redirect()->back();
+    }
+
+
+    public function search($txt)
+    {
+        $result = invoices::search($txt)
+        ->with(['invoices_attachments' , 'invoices_details' ])
+        ->withTrashed()
+        ->distinct()
+        ->get();
+
+        $result= isset( $result) ?  $result : ["found" => "not result found"];
+
+        return  response()->json($result);
     }
 }

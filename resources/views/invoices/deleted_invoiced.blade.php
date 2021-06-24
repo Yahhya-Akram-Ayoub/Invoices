@@ -125,15 +125,15 @@
                                         <th class="border-bottom-0">
 
                                             @if ($i->value_status == 2)
-                                            <span class="badge badge-pill badge-success">{{__('invoice.partially')}}</span>
+                                                    <span class="badge badge-pill badge-success">{{__('invoice.paid')}}</span>
 
-                                        @elseif($i->value_status ==0)
-                                            <span class="badge badge-pill badge-danger">{{ __('invoice.paid') }}</span>
+                                                @elseif($i->value_status ==0)
+                                                    <span class="badge badge-pill badge-danger">{{ __('invoice.unpaid') }}</span>
 
-                                        @else
-                                          <span class="badge badge-pill badge-warning">{{__('invoice.unpaid') }}</span>
+                                                @else
+                                                  <span class="badge badge-pill badge-warning">{{__('invoice.partially') }}</span>
 
-                                        @endif
+                                                @endif
                                         </th>
                                         {{-- <th class="border-bottom-0"></th> --}}
                                         <th>

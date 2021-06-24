@@ -69,18 +69,15 @@
                                                 <th scope="row">الحالة الحالية</th>
 
                                                 @if ($invoice->value_status == 2)
-                                                    <td><span
-                                                            class="badge badge-pill badge-success">{{ $invoice->status }}</span>
-                                                    </td>
-                                                @elseif($invoice->value_status == 0)
-                                                    <td><span
-                                                            class="badge badge-pill badge-danger">{{ $invoice->status }}</span>
-                                                    </td>
-                                                @else
-                                                    <td><span
-                                                            class="badge badge-pill badge-warning">{{ $invoice->status }}</span>
-                                                    </td>
-                                                @endif
+                                                <span class="badge badge-pill badge-success">{{__('invoice.paid')}}</span>
+
+                                            @elseif($invoice->value_status ==0)
+                                                <span class="badge badge-pill badge-danger">{{ __('invoice.unpaid') }}</span>
+
+                                            @else
+                                              <span class="badge badge-pill badge-warning">{{__('invoice.partially') }}</span>
+
+                                            @endif
                                             </tr>
 
                                         </table>

@@ -1,5 +1,5 @@
 $(function() {
-	
+
 	/* Dashboard content */
 	$('#compositeline').sparkline('html', {
 		lineColor: 'rgba(255, 255, 255, 0.6)',
@@ -62,8 +62,8 @@ $(function() {
 		disableTooltips: true
 	});
 	/* Dashboard content closed*/
-	
-	
+
+
 	/* Apexcharts (#bar) */
 	var optionsBar = {
 	  chart: {
@@ -110,8 +110,8 @@ $(function() {
 			  colors: ['transparent'],
 			},
 		  },
-		  
-		  
+
+
 	  }],
 	   series: [{
 		  name: 'Impressions',
@@ -149,11 +149,11 @@ $(function() {
 		  }
 	  }
 	}
-	new ApexCharts(document.querySelector('#bar'), optionsBar).render();
-	
+	// new ApexCharts(document.querySelector('#bar'), optionsBar).render();
+
 	/* Apexcharts (#bar) closed */
-	
-	
+
+
 	/*--- Apex (#chart) ---*/
 	var options = {
 		chart: {
@@ -169,10 +169,10 @@ $(function() {
 		size: 120,
 		 imageWidth: 50,
               imageHeight: 50,
-			  
-		 track: {	
-		 strokeWidth: "80%",	
-		 background: '#ecf0fa',	
+
+		 track: {
+		 strokeWidth: "80%",
+		 background: '#ecf0fa',
 		},
 		 dropShadow: {
                 enabled: false,
@@ -188,8 +188,8 @@ $(function() {
 			color: undefined,
 			offsetY: 30,
 		  },
-		  hollow: {	
-			 size: "60%"	
+		  hollow: {
+			 size: "60%"
 			},
 		  value: {
 			offsetY: -10,
@@ -219,16 +219,16 @@ $(function() {
 	stroke: {
 	  dashArray: 4
 	},
-   series: [83],	
+   series: [83],
 		labels: [""]
 	};
 
-	var chart = new ApexCharts(document.querySelector("#chart"), options);
-	chart.render();
+	// var chart = new ApexCharts(document.querySelector("#chart"), options);
+	// chart.render();
 	/*--- Apex (#chart)closed ---*/
-	
-	
-	
+
+
+
 	/*--- Apex (#spark1) ---*/
 	var spark1 = {
     chart: {
@@ -282,7 +282,7 @@ $(function() {
 	  }
 	}
 	/*--- Apex (#spark1) closed ---*/
-	
+
 	/*--- Apex (#spark2) ---*/
 	var spark2 = {
 	  chart: {
@@ -335,7 +335,7 @@ $(function() {
 	  }
 	}
 	/*--- Apex (#spark2) closed ---*/
-	
+
 	/*--- Apex (#spark3) ---*/
 	var spark3 = {
 	  chart: {
@@ -393,7 +393,7 @@ $(function() {
 	  }
 	}
 	/*--- Apex (#spark3) closed ---*/
-	
+
 	/*--- Apex (#spark4) ---*/
 
 	var spark4 = {
@@ -452,7 +452,7 @@ $(function() {
 	  }
 	}
 	/*--- Apex (#spark4) closed ---*/
-	
+
 	/*--- Apex (#spark5) ---*/
 	var spark5 = {
 	  chart: {
@@ -511,36 +511,36 @@ $(function() {
 	}
 
 
-	new ApexCharts(document.querySelector("#spark1"), spark1).render();
-	new ApexCharts(document.querySelector("#spark2"), spark2).render();
-	new ApexCharts(document.querySelector("#spark3"), spark3).render();
-	new ApexCharts(document.querySelector("#spark4"), spark4).render();
-	new ApexCharts(document.querySelector("#spark5"), spark5).render();
-	
+	// new ApexCharts(document.querySelector("#spark1"), spark1).render();
+	// new ApexCharts(document.querySelector("#spark2"), spark2).render();
+	// new ApexCharts(document.querySelector("#spark3"), spark3).render();
+	// new ApexCharts(document.querySelector("#spark4"), spark4).render();
+	// new ApexCharts(document.querySelector("#spark5"), spark5).render();
+
 	/*--- Apex (#spark5) closed ---*/
-	
-	
-	/*--- Map ---*/
-	$('#vmap2').vectorMap({
-		map: 'usa_en',
-		showTooltip: true,
-		backgroundColor: '#fff',
-		color: '#60adff',
-		colors: {
-			mo: '#9fceff',
-			fl: '#60adff',
-			or: '#409cff',
-			ca: '#005cbf',
-			tx: '#005cbf',
-			wy: '#005cbf',
-			ny: '#007bff'
-		},
-		hoverColor: '#222',
-		enableZoom: false,
-		borderWidth: 1,
-		borderColor: '#fff',
-		hoverOpacity: .85
-	});
-	/*--- Map closed ---*/
-	
+
+
+	// /*--- Map ---*/
+	// $('#vmap2').vectorMap({
+	// 	map: 'usa_en',
+	// 	showTooltip: true,
+	// 	backgroundColor: '#fff',
+	// 	color: '#60adff',
+	// 	colors: {
+	// 		mo: '#9fceff',
+	// 		fl: '#60adff',
+	// 		or: '#409cff',
+	// 		ca: '#005cbf',
+	// 		tx: '#005cbf',
+	// 		wy: '#005cbf',
+	// 		ny: '#007bff'
+	// 	},
+	// 	hoverColor: '#222',
+	// 	enableZoom: false,
+	// 	borderWidth: 1,
+	// 	borderColor: '#fff',
+	// 	hoverOpacity: .85
+	// });
+	// /*--- Map closed ---*/
+
 });

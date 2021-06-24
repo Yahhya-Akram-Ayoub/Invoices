@@ -13,7 +13,29 @@
 							<a class="close-toggle" href="#"><i class="header-icons fe fe-x"></i></a>
 						</div>
 						<div class="main-header-center mr-3 d-sm-none d-md-none d-lg-block">
-							<input class="form-control" placeholder="Search for anything..." type="search"> <button class="btn"><i class="fas fa-search d-none d-md-block"></i></button>
+                            <div class="dropdown nav-item main-header-message ">
+							<input class="form-control" placeholder="Search for anything..." id="searchInput" name="searchInput" type="search">
+                             {{-- --}}
+								<a class="btn new nav-link"      href="#" ><i class="fas fa-search d-none d-md-block" id="ico_search" ></i></a>
+								<div class="dropdown-menu">
+									<div class="menu-header-content bg-primary text-right">
+										<div class="d-flex">
+											<h6 class="dropdown-title mb-1 tx-15 text-white font-weight-semibold">Searsh Result</h6>
+										</div>
+										<p class="dropdown-title-text subtext mb-0 text-white op-6 pb-0 tx-12 ">You have 4 Result </p>
+									</div>
+									<div class="main-message-list chat-scroll">
+                                        {{-- //الرابط تذكر الصلاحيات --}}
+                                 <div id="result_box">
+
+									{{-- // --}}
+                                 </div>
+									</div>
+									<div class="text-center dropdown-footer">
+										<a href="text-center">VIEW ALL</a>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="main-header-right">
@@ -217,4 +239,5 @@
 					</div>
 				</div>
 			</div>
+
 <!-- /main-header -->
