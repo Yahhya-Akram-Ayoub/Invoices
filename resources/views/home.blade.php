@@ -32,7 +32,7 @@
 							</div>
 						</div>
 						<div>
-							<label class="tx-13">Online Sales</label>
+							<label class="tx-13">{{Auth::user()->isOnline() ? 'online' : 'offLine'}} </label>
 							<h5>563,275</h5>
 						</div>
 						<div>

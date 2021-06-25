@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Branch;
 use App\Models\Section;
 use App\Models\invoices;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -49,7 +50,9 @@ class User extends Authenticatable
         'roles_name' => 'array',
     ];
 
-
+    public function isOnline(){
+        return Cache::has('user-is-online-'.$this->id);
+    }
     public function Section()
     {
         return $this->hasMany(Section::class);

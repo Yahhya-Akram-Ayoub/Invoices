@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\invoices;
 use App\Models\invoices_attachment;
+use Carbon\Traits\Date;
 use Illuminate\Http\Request;
 use GrahamCampbell\ResultType\Result;
 
