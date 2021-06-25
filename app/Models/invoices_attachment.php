@@ -15,7 +15,7 @@ class invoices_attachment extends Model
     {
         return $this->belongsTo(invoices::class);
     }
-    public function Users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

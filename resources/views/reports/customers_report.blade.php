@@ -57,7 +57,7 @@
 
                 <form action="search_customers_report" method="POST" role="search" autocomplete="off">
                     {{ csrf_field() }}
-
+                    @method('get')
 
                     <div class="row">
 
@@ -141,16 +141,14 @@
                                     <tr>
                                         <td>{{ $i }}</td>
                                         <td>{{ $invoice->invoice_number }} </td>
-                                        <td>{{ $invoice->invoice_Date }}</td>
-                                        <td>{{ $invoice->Due_date }}</td>
-                                        <td>{{ $invoice->branch }}</td>
-                                        <td><a
-                                                href="{{ url('InvoicesDetails') }}/{{ $invoice->id }}">{{ $invoice->section->section_name }}</a>
-                                        </td>
-                                        <td>{{ $invoice->Discount }}</td>
-                                        <td>{{ $invoice->Rate_VAT }}</td>
-                                        <td>{{ $invoice->Value_VAT }}</td>
-                                        <td>{{ $invoice->Total }}</td>
+                                        <td>{{ $invoice->invoice_date }}</td>
+                                        <td>{{ $invoice->due_date }}</td>
+                                        <td>{{ $invoice->branch->branch_name }}</td>
+                                        <td>{{ $invoice->section->section_name }}</td>
+                                        <td>{{ $invoice->discount }}</td>
+                                        <td>{{ $invoice->rate_vat }}</td>
+                                        <td>{{ $invoice->value_vat }}</td>
+                                        <td>{{ $invoice->total_amount }}</td>
                                         <td>
                                             @if ($invoice->value_status == 2)
                                                     <span class="badge badge-pill badge-success">{{__('invoice.paid')}}</span>
@@ -244,7 +242,7 @@
                         $.each(data, function(key, value) {
 
                             $('select[name="branch"]').append('<option value="' +
-                            value + '">' + value + '</option>');
+                                key + '">' + value + '</option>');
                         });
                     },
                 });

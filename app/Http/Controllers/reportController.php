@@ -71,7 +71,7 @@ class reportController extends Controller
         //  raio == 2 search by invoive number
 
         if ($rdio == 1) {
-            if (!empty($request->type) && empty($request->start_at) && empty($request->end_at)) {
+            if (isset($request->type) && empty($request->start_at) && empty($request->end_at)) {
                 $type = $request->type;
                 $invoices = invoices::where('value_status', $request->type)->get();
                 return view('reports.invoices_report', compact('type'))->withDetails($invoices);
@@ -84,8 +84,8 @@ class reportController extends Controller
             }
         } else {
             $invoice_number = $request->invoice_number;
-            $invoices = invoices::where('invoice_number', '=', $invoice_number)->first();
-            return view('reports.invoices_report', compact('invoice_number'))->withDetails($invoices);
+            $invoice =[ invoices::where('invoice_number', '=', $invoice_number)->first() ];
+            return view('reports.invoices_report', compact('invoice_number' , 'rdio'))->withDetails($invoice);
         }
         return "errorr";
     }
@@ -100,10 +100,9 @@ class reportController extends Controller
             return view('reports.customers_report', compact('sections'))->withDetails($invoices);
         } else {
 
-
             $start_at = date($request->start_at);
             $end_at = date($request->end_at);
-            $invoices = invoices::whereBetween('invoive_date', [$start_at, $end_at])->where('section_id', '=', $request->Section)->where('branch_id', '=', $request->branch)->get();
+            $invoices = invoices::whereBetween('invoice_date', [$start_at, $end_at])->where('section_id', '=', $request->Section)->where('branch_id', '=', $request->branch)->get();
             $sections = Section::all();
 
             return view('reports.customers_report', compact('sections', 'end_at', 'start_at'))->withDetails($invoices);

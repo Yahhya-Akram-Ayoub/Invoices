@@ -40,7 +40,7 @@
                                                 <th scope="row">رقم الفاتورة</th>
                                                 <td>{{ $invoice->invoice_number }}</td>
                                                 <th scope="row">تاريخ الاصدار</th>
-                                                <td>{{ $invoice->invoive_date }}</td>
+                                                <td>{{ $invoice->invoice_date }}</td>
                                                 <th scope="row">تاريخ الاستحقاق</th>
                                                 <td>{{ $invoice->due_date }}</td>
                                                 <th scope="row">القسم</th>
@@ -65,9 +65,9 @@
                                                 <th scope="row">قيمة الضريبة</th>
                                                 <td>{{ $invoice->value_vat }}</td>
                                                 <th scope="row">الاجمالي مع الضريبة</th>
-                                                <td>{{ $invoice->total }}</td>
+                                                <td>{{ $invoice->total_amount }}</td>
                                                 <th scope="row">الحالة الحالية</th>
-
+                                                <td>
                                                 @if ($invoice->value_status == 2)
                                                 <span class="badge badge-pill badge-success">{{__('invoice.paid')}}</span>
 
@@ -78,6 +78,7 @@
                                               <span class="badge badge-pill badge-warning">{{__('invoice.partially') }}</span>
 
                                             @endif
+                                                </td>
                                             </tr>
 
                                         </table>
@@ -113,12 +114,12 @@
 
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>{{ $detail->invoice_number }}</th>
-                                                        <th>{{ $detail->branch }}</th>
-                                                        <th>{{ $detail->section }}</th>
+                                                        <th>{{ $invoice->invoice_number }}</th>
+                                                        <th>{{ $invoice->branch->branch_name }}</th>
+                                                        <th>{{ $invoice->section->section_name }}</th>
 
 
-                                                        <th>{{ $detail->value_status }}</th>
+                                                        <th>{{ $detail->created_at->format('Y-m-d') }}</th>
                                                         <th>{{ $detail->amount_paid }}</th>
                                                         <th>{{  $sum+=$detail->amount_paid  }}</th>
                                                         <th>
@@ -129,8 +130,8 @@
                                                              @else
                                                              مدفوعة
                                                         @endif</th>
-                                                        <th>{{ $detail->created_at }}</th>
-                                                        <th>{{ $detail->user }}</th>
+                                                        <th>{{ $detail->created_at->format('y-m-d') }}</th>
+                                                        <th>{{ $detail->user->name }}</th>
                                                     </tr>
 
                                                 @endforeach
@@ -184,8 +185,9 @@
                                                         <tr>
                                                             <th>{{ $x++ }}</th>
                                                             <th>{{ $item->file_name }}</th>
-                                                            <th>{{ $item->Created_by }}</th>
-                                                            <th>{{ $item->create_date }}</th>
+                                                            <th>{{ $item->user->name }}</th>
+                                                            <th>{{ $item->created_at->format('y-m-d') }}</th>
+
                                                             <th>
                                                                 @can('Delete Attachment')
                                                                   <button type="button" name="delete" id="btn-delete"

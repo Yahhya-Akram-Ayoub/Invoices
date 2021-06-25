@@ -58,16 +58,18 @@
                 <form action="search_invoices_report" method="get" role="search" autocomplete="off">
                     {{ csrf_field() }}
 
-
+@php
+    if(!isset($rdio)){$rdio = 1;}
+    @endphp
                     <div class="col-lg-3">
                         <label class="rdiobox">
-                            <input checked name="rdio" type="radio" value="1" id="type_div"> <span>بحث بنوع
+                            <input checked name="rdio" type="radio" value="1" {{$rdio == 1 ? 'checked' : '' }} id="type_div"> <span>بحث بنوع
                                 الفاتورة</span></label>
                     </div>
 
 
                     <div class="col-lg-3 mg-t-20 mg-lg-t-0">
-                        <label class="rdiobox"><input name="rdio" value="2" type="radio"><span>بحث برقم الفاتورة
+                        <label class="rdiobox"><input name="rdio" value="2" {{$rdio == 2 ? 'checked' : '' }} type="radio"><span>بحث برقم الفاتورة
                             </span></label>
                     </div><br><br>
 
@@ -75,13 +77,16 @@
 
                         <div class="col-lg-3 mg-t-20 mg-lg-t-0" id="type">
                             <p class="mg-b-10">تحديد نوع الفواتير</p>
+                            @php
+                            if(!isset($type)){$type = 5;}
+                            @endphp
                             <select class="form-control select2" name="type"  required>
-                                <option value="none" {{ empty($type)  ?? 'selected'  }} disabled hidden>
+                                <option value="none" {{ empty($type)  ?? 'selected'  }} disabled selected hidden>
                                     Select an Option
                                 </option>
-                                <option value="2" {{ !empty($type) && $type == 2 ?? 'selected'  }} >الفواتير المدفوعة</option>
-                                <option value="0" {{ !empty($type) && $type == 0 ?? 'selected'  }} >الفواتير الغير المدفوعة</option>
-                                <option value="1" {{ !empty($type) && $type ==1 ?? 'selected'  }} >الفواتير المدفوعة جزئيا</option>
+                                <option value="2" {{  $type == 2 ? 'selected' : ''  }} >الفواتير المدفوعة</option>
+                                <option value="0" {{  $type == 0 ? 'selected' : ''  }} >الفواتير الغير المدفوعة</option>
+                                <option value="1" {{  $type == 1 ? 'selected'  : '' }} >الفواتير المدفوعة جزئيا</option>
 
                             </select>
                         </div><!-- col-4 -->
@@ -159,14 +164,14 @@
 
                                         <td>{{ $c }}</td>
                                         <th class="border-bottom-0">{{ $invoice->invoice_number }}</th>
-                                        <th class="border-bottom-0">{{ $invoice->invoive_date }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->invoice_date }}</th>
                                         <th class="border-bottom-0">{{ $invoice->due_date }}</th>
                                         <th class="border-bottom-0">{{ $invoice->branch_id }}</th>
                                         <th class="border-bottom-0">{{ $invoice->section_id }}</th>
                                         <th class="border-bottom-0">{{ $invoice->discount }}</th>
                                         <th class="border-bottom-0">{{ $invoice->rate_vat }}</td>
                                             <th class="border-bottom-0">{{ $invoice->value_vat }}</td>
-                                        <th class="border-bottom-0">{{ $invoice->total }}</th>
+                                        <th class="border-bottom-0">{{ $invoice->total_amount }}</th>
 
                                         <td>
                                             @if ($invoice->value_status == 2)
@@ -249,23 +254,25 @@
 <script>
     $(document).ready(function() {
 
-        $('#invoice_number').hide();
 
         $('input[type="radio"]').click(function() {
-            if ($(this).attr('id') == 'type_div') {
-                $('#invoice_number').hide();
-                $('#type').show();
-                $('#start_at').show();
-                $('#end_at').show();
-            } else {
-                $('#invoice_number').show();
-                $('#type').hide();
-                $('#start_at').hide();
-                $('#end_at').hide();
-            }
+            checkRdio();
         });
     });
 
+    var checkRdio = function (){
+        if ($('input[type="radio"]').attr('id') == 'type_div') {
+            $('#invoice_number').hide();
+            $('#type').show();
+            $('#start_at').show();
+            $('#end_at').show();
+        } else {
+            $('#invoice_number').show();
+            $('#type').hide();
+            $('#start_at').hide();
+            $('#end_at').hide();
+        }
+    }; checkRdio();
 </script>
 
 
