@@ -11,8 +11,8 @@ class BranchController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:Add Branch', ['only' => ['create','store']]);
-        $this->middleware('permission:Modify branch', ['only' => ['update','edit']]);
+        $this->middleware('permission:Add Branch', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Modify branch', ['only' => ['update', 'edit']]);
         $this->middleware('permission:Delete Branch', ['only' => ['destroy']]);
     }
 
@@ -23,7 +23,7 @@ class BranchController extends Controller
      */
     public function index()
     {
-        $branchs =  Branch::all();
+        $branchs = Branch::all();
         $sections = Section::all();
         return view('section.section-branchs', compact(['branchs', 'sections']));
     }
@@ -41,7 +41,7 @@ class BranchController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(branchRequest $request)
@@ -61,7 +61,7 @@ class BranchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Branch  $branch
+     * @param \App\Models\Branch $branch
      * @return \Illuminate\Http\Response
      */
     public function show(branch $branch)
@@ -72,7 +72,7 @@ class BranchController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Branch  $branch
+     * @param \App\Models\Branch $branch
      * @return \Illuminate\Http\Response
      */
     public function edit(branch $branch)
@@ -83,20 +83,25 @@ class BranchController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Branch  $branch
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Branch $branch
      * @return \Illuminate\Http\Response
      */
     public function update(branchRequest $request)
     {
         $validated = $request->validated();
 
-        Branch::where('id', '=', $request->id)->update([
-            'branch_name' => $request->branch_name,
-            'description' => $request->description,
-            'section_id' => $request->section_id
+        try {
+            Branch::where('id', '=', $request->id)->update([
+                'branch_name' => $request->branch_name,
+                'description' => $request->description,
+                'section_id' => $request->section_id
+            ]);
+        } catch (Throwable $e) {
+            report($e);
+            return back();
+        }
 
-        ]);
 
         return redirect('branch');
     }
@@ -104,22 +109,31 @@ class BranchController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Branch  $branch
+     * @param \App\Models\Branch $branch
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(branchRequest $request)
     {
+        $validated = $request->validated();
+
         $branch = Branch::find($request->id);
-        $branch->delete();
-        session()->flash('delete', 'تم حذف المنتج ');
+
+        if (isset($branch)) {
+            $branch->delete();
+            session()->flash('delete', 'تم حذف المنتج ');
+        }
+
         return redirect('branch');
     }
 
     public function getbranch($id)
     {
-        $branchs = Branch::all()->where('section_id',  $id)->pluck('branch_name','id');
+
+        $branchs = Branch::all()->where('section_id', $id)->pluck('branch_name', 'id');
 
         //json for ajax
         return json_encode($branchs);// return responde()->josn($branch);
+
+
     }
 }

@@ -43,10 +43,10 @@ class reportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
         //
     }
@@ -54,12 +54,12 @@ class reportController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show()
     {
-        return $request;
+
     }
 
     public function search_invoices_report(Request $request)
@@ -71,47 +71,71 @@ class reportController extends Controller
         //  raio == 2 search by invoive number
 
         if ($rdio == 1) {
+
             if (isset($request->type) && empty($request->start_at) && empty($request->end_at)) {
+
                 $type = $request->type;
                 $invoices = invoices::where('value_status', $request->type)->get();
-                return view('reports.invoices_report', compact('type'))->withDetails($invoices);
+                return isset($invoices) ? view('reports.invoices_report', compact('type'))->withDetails($invoices) : back();
             } else {
                 $type = $request->type;
                 $start_at = date($request->start_at);
                 $end_at = date($request->end_at);
                 $invoices = invoices::whereBetween('invoice_date', [$start_at, $end_at])->where('value_status', $request->type)->get();
-                return view('reports.invoices_report', compact('type', 'end_at', 'start_at'))->withDetails($invoices);
+                return isset($invoices) ? view('reports.invoices_report', compact('type', 'end_at', 'start_at'))->withDetails($invoices) : back();
             }
-        } else {
+        } else if ($rdio == 2) {
             $invoice_number = $request->invoice_number;
-            $invoice =[ invoices::where('invoice_number', '=', $invoice_number)->first() ];
-            return view('reports.invoices_report', compact('invoice_number' , 'rdio'))->withDetails($invoice);
+            $invoice = [invoices::where('invoice_number', '=', $invoice_number)->first()];
+            return isset($invoices) ? view('reports.invoices_report', compact('invoice_number', 'rdio'))->withDetails($invoice) : back();
         }
-        return "errorr";
+
+        return back();
     }
+
     public function search_customers_report(Request $request)
     {
-        if (!empty($request->branch) && !empty($request->Section) && empty($request->start_at) && empty($request->end_at)) {
+        $validate = $request->validate([
+            'branch' => 'required',
+            'Section' => 'required',
+        ]);
+
+        if (empty($request->start_at) && empty($request->end_at)) {
 
             $invoices = invoices::where('section_id', $request->Section)->where('branch_id', $request->branch)->get();
             $sections = Section::all();
 
+            if (isset($invoices)) {
+                return view('reports.customers_report', compact('sections'))->withDetails($invoices);
+            }
 
-            return view('reports.customers_report', compact('sections'))->withDetails($invoices);
         } else {
+
+            $validate = $request->validate([
+                'start_at' => 'required',
+                'end_at' => 'required',
+            ]);
 
             $start_at = date($request->start_at);
             $end_at = date($request->end_at);
+
+
             $invoices = invoices::whereBetween('invoice_date', [$start_at, $end_at])->where('section_id', '=', $request->Section)->where('branch_id', '=', $request->branch)->get();
             $sections = Section::all();
 
-            return view('reports.customers_report', compact('sections', 'end_at', 'start_at'))->withDetails($invoices);
+            if (isset($invoices)) {
+                return view('reports.customers_report', compact('sections', 'end_at', 'start_at'))->withDetails($invoices);
+            }
+
         }
+
+        return back();
     }
+
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -122,8 +146,8 @@ class reportController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -134,7 +158,7 @@ class reportController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

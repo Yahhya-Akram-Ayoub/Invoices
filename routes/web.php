@@ -26,6 +26,9 @@ use App\Http\Controllers\InvoicesAttachmentController;
 
 Auth::routes(['register' => false]);
 
+Route::fallback(function () {
+    return ['name' => 'yahhay'];
+});
 Route::group(['middleware' => ['auth']], function () {
 
 

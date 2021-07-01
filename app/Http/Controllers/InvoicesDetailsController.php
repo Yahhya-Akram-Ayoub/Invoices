@@ -34,7 +34,7 @@ class InvoicesDetailsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -45,7 +45,7 @@ class InvoicesDetailsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\invoices_details  $invoices_details
+     * @param \App\Models\invoices_details $invoices_details
      * @return \Illuminate\Http\Response
      */
     public function show($id, $opreation = null)
@@ -53,32 +53,46 @@ class InvoicesDetailsController extends Controller
 
         if (empty($opreation)) {
             $invoice = invoices::find($id);
-            return view('invoices.inoice_detail', compact('invoice'));
+
+            if (isset($invoice)) {
+                return view('invoices.inoice_detail', compact('invoice'));
+            }
+
         } else if ($opreation == 2) {
+
             // for deleted invoices
             $invoice = invoices::withTrashed()->find($id);
-            return view('invoices.inoice_detail', compact('invoice'));
+            if (isset($invoice)) {
+                return view('invoices.inoice_detail', compact('invoice'));
+            }
+
         }
+
+        return back();
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\invoices_details  $invoices_details
+     * @param \App\Models\invoices_details $invoices_details
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $invoice = invoices::find($id);
-        $sections = Section::all();
-        return view('invoices.edit_invoice', compact('invoice', 'sections'));
+        if (isset($invoice)) {
+            $sections = Section::all();
+            return view('invoices.edit_invoice', compact('invoice', 'sections'));
+        }
+
+        return back();
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\invoices_details  $invoices_details
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\invoices_details $invoices_details
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, invoices_details $invoices_details)
@@ -89,7 +103,7 @@ class InvoicesDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\invoices_details  $invoices_details
+     * @param \App\Models\invoices_details $invoices_details
      * @return \Illuminate\Http\Response
      */
     public function destroy(invoices_details $invoices_details)
@@ -100,7 +114,12 @@ class InvoicesDetailsController extends Controller
     public function pay($id)
     {
         $invoice = invoices::find($id);
-        $sections = Section::all();
-        return view('invoices.edit_pay', compact('invoice',  'sections'));
+
+        if (isset($invoice)) {
+            $sections = Section::all();
+            return view('invoices.edit_pay', compact('invoice', 'sections'));
+        }
+
+        return back();
     }
 }

@@ -58,13 +58,13 @@
 
                             <div class="col">
                                 <label>تاريخ الفاتورة</label>
-                                <input class="form-control fc-datepicker" name="invoice_Date" placeholder="YYYY-MM-DD"
+                                <input class="form-control fc-datepicker" name="invoice_date" placeholder="YYYY-MM-DD"
                                     type="text" value="{{ date('Y-m-d') }}" required>
                             </div>
 
                             <div class="col">
                                 <label>تاريخ الاستحقاق</label>
-                                <input class="form-control fc-datepicker" name="Due_date" placeholder="YYYY-MM-DD"
+                                <input class="form-control fc-datepicker" name="due_date" placeholder="YYYY-MM-DD"
                                     type="date" required>
                             </div>
 
@@ -74,7 +74,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">القسم</label>
-                                <select name="Section" class="form-control SlectBox">
+                                <select name="section" class="form-control SlectBox">
                                     <!--placeholder-->
                                     <option value="" selected disabled>حدد القسم</option>
                                     @foreach ($sections as $section)
@@ -211,7 +211,7 @@
 
     <script>
         $(document).ready(function() {
-            $('select[name="Section"]').on('change', function() {
+            $('select[name="section"]').on('change', function() {
                 var section_id = $(this).val();
 
                 if (section_id) {

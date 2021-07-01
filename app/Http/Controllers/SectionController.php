@@ -10,10 +10,11 @@ class SectionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:Add Section', ['only' => ['create','store']]);
-        $this->middleware('permission:Modify Section', ['only' => ['update','edit']]);
+        $this->middleware('permission:Add Section', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Modify Section', ['only' => ['update', 'edit']]);
         $this->middleware('permission:Delete Section', ['only' => ['destroy']]);
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -38,7 +39,7 @@ class SectionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -87,7 +88,7 @@ class SectionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Section  $section
+     * @param \App\Models\Section $section
      * @return \Illuminate\Http\Response
      */
     public function show(Section $section)
@@ -98,7 +99,7 @@ class SectionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Section  $section
+     * @param \App\Models\Section $section
      * @return \Illuminate\Http\Response
      */
     public function edit(Section $section)
@@ -109,8 +110,8 @@ class SectionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Section  $section
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Section $section
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -130,26 +131,35 @@ class SectionController extends Controller
 
         $section = Section::find($id);
 
-        $section->update([
-            'section_name' => $request->section_name,
-            'description' => $request->description
-        ]);
+        if (isset($section)) {
 
-        session()->flash('edit', 'تم تعديل القسم بنجاج');
+            $section->update([
+                'section_name' => $request->section_name,
+                'description' => $request->description
+            ]);
+
+            session()->flash('edit', 'تم تعديل القسم بنجاج');
+        }
+
+
         return redirect('section');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Section  $section
+     * @param \App\Models\Section $section
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
     {
         $section = Section::find($request->id);
-        $section->delete();
-        session()->flash('delete','تم حذف القسم ');
+
+        if (isset($section)) {
+            $section->delete();
+            session()->flash('delete', 'تم حذف القسم ');
+        }
+
         return redirect('section');
     }
 }

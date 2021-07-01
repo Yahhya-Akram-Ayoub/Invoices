@@ -30,19 +30,16 @@ class HomeController extends Controller
     public function index(Request $request)
     {
 
-
-
-
-        $geoIpInfo =  geoip()->getLocation(geoip()->getClientIP())->toArray();
+        $geoIpInfo = geoip()->getLocation(geoip()->getClientIP())->toArray();
         session()->put('country', $geoIpInfo['country']);
 
-        $data =  $this->getData();
+        $data = $this->getData();
 
         $chartjs = app()->chartjs
             ->name('barChart')
             ->type('bar')
             ->size(['width' => 450, 'height' => 280])
-            ->labels(['Unpaid Invoices '.$data['UnpaidPercent'].'%', 'Partially Unpaid Invoices '.$data['PartiallyPercent'].'%' , 'Paid Invoices '.$data['PaidPercent'].'%'])
+            ->labels(['Unpaid Invoices ' . $data['UnpaidPercent'] . '%', 'Partially Unpaid Invoices ' . $data['PartiallyPercent'] . '%', 'Paid Invoices ' . $data['PaidPercent'] . '%'])
             ->datasets([
                 [
                     "label" => ["Unpaid Invoices "],
@@ -51,7 +48,7 @@ class HomeController extends Controller
                 ], [
                     "label" => ["Partially Paid Invoices"],
                     'backgroundColor' => ['rgba(255, 0, 255, 0.6)'],
-                    'data' => [$data['PartiallyPercent'] ]
+                    'data' => [$data['PartiallyPercent']]
                 ], [
                     "label" => ["Paid Invoices "],
                     'backgroundColor' => ['rgba(0, 255, 255, 0.6)'],
@@ -72,13 +69,11 @@ class HomeController extends Controller
         //     ]]]);
 
 
-
-
         // ExampleController.php
 
 
-        $Unpaid =  $data['AllAmount'] - $data['paidAmount'];
-        $paid =     $data['paidAmount'];
+        $Unpaid = $data['AllAmount'] - $data['paidAmount'];
+        $paid = $data['paidAmount'];
         $chartjs2 = app()->chartjs
             ->name('pieChart')
             ->type('pie')
@@ -94,11 +89,6 @@ class HomeController extends Controller
             ->options([]);
 
 
-
-
-
-
-
         return view('home', compact('chartjs', 'chartjs2', 'data', 'geoIpInfo'));
     }
 
@@ -110,8 +100,8 @@ class HomeController extends Controller
         $PaidInvoices = invoices::where('value_status', '=', 2)->get();
 
         $countAll = $AllInvoices->count();
-        $countAll =  $countAll == 0 ? 1 : $countAll;
-        $countUnpaid =  $UnpaidInvoices->count();
+        $countAll = $countAll == 0 ? 1 : $countAll;
+        $countUnpaid = $UnpaidInvoices->count();
         $countPartially = $PartiallyPaidInvoices->count();
         $countPaid = $PaidInvoices->count();
 
@@ -120,17 +110,17 @@ class HomeController extends Controller
         $PaidPercent = round($countPaid / $countAll * 100, 2);
 
 
-        $result =  [
+        $result = [
             'Unpaid' => $countUnpaid,
-            'UnpaidPercent' =>  $UnpaidPercent,
+            'UnpaidPercent' => $UnpaidPercent,
 
-            'Partially' =>  $countPartially,
+            'Partially' => $countPartially,
             'PartiallyPercent' => $PartiallyPercent,
 
-            'Paid' =>  $countPaid,
-            'PaidPercent' =>   $PaidPercent,
+            'Paid' => $countPaid,
+            'PaidPercent' => $PaidPercent,
 
-            'AllInvoices' =>  $countAll,
+            'AllInvoices' => $countAll,
 
             'AllAmount' => $AllInvoices->sum('total_amount'),
             'paidAmount' => $AllInvoices->sum('total_paid')
@@ -140,4 +130,6 @@ class HomeController extends Controller
 
         return $result;
     }
+
+
 }
