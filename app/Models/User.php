@@ -11,11 +11,15 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Shetabit\Visitor\Traits\Visitor;
+
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
-    use HasRoles;
+      use HasFactory
+        , Notifiable
+        , HasRoles
+        , Visitor;
 
     /**
      * The attributes that are mass assignable.

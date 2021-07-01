@@ -33,8 +33,9 @@
 						</div>
 						<div>
 							<label class="tx-13">{{Auth::user()->isOnline() ? 'online' : 'offLine'}} </label>
-							<h5>563,275</h5>
-						</div>
+                            <h5>{{App\Models\User::online()->get()->count() }}</h5>
+
+                        </div>
 						<div>
 							<label class="tx-13">Offline Sales</label>
 							<h5>783,675</h5>

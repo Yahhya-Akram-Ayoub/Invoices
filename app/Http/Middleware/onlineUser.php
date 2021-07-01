@@ -20,9 +20,14 @@ class onlineUser
     {
         if(Auth::check())
         {
+            $user =  Auth::user();
+
+            $user->visit();
+
             $priode =  now()->addMinute(2);
-            Cache::put('user-is-online-'.Auth::user()->id , true , $priode);
+            Cache::put('user-is-online-'.$user->id , true , $priode);
         }
+
         return $next($request);
     }
 }

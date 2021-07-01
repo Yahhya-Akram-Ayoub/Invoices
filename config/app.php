@@ -179,6 +179,7 @@ return [
 
         Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
         \Torann\GeoIP\GeoIPServiceProvider::class,
+        Shetabit\Visitor\Provider\VisitorServiceProvider::class,
 
     ],
 
@@ -236,6 +237,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
+        'Visitor' => Shetabit\Visitor\Facade\Visitor::class,
     ],
 
 ];

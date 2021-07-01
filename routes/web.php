@@ -29,58 +29,82 @@ Auth::routes(['register' => false]);
 Route::group(['middleware' => ['auth']], function () {
 
 
-Route::get('/home' , [HomeController::class, 'index'])->name('home');
-Route::get('/' , [HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
-Route::post('/updateDetails', [InvoicesController::class, 'updateDetails']);
+    Route::group(['middleware' => ['permission:Invoices']], function () {
 
-Route::resource('/invoices', InvoicesController::class);
-Route::resource('/section', SectionController::class);
-Route::resource('/branch', branchController::class);
-Route::resource('/attachment', InvoicesAttachmentController::class);
-Route::resource('/reports', reportController::class );
+        Route::resource('/invoices', InvoicesController::class)->middleware(['permission:Iinvoices list']);
+        Route::get('/invoices_paid', [InvoicesController::class, 'invoices_paid'])->middleware(['permission:Paid invoices']);
+        Route::get('/invoices_unpaid', [InvoicesController::class, 'invoices_unpaid'])->middleware(['permission:Unpaid invoices']);
+        Route::get('/invoices_partially_paid', [InvoicesController::class, 'invoices_partially_paid'])->middleware(['permission:partilly paid invoices']);
+        Route::get('/archived_invoiced', [InvoicesController::class, 'archived_invoiced'])->middleware(['permission:Artiched invoices']);
+        Route::get('/deleted_invoiced', [InvoicesController::class, 'deleted_invoiced'])->middleware(['permission:Archive invoice']);
 
-Route::post('/delete-attachment', [InvoicesAttachmentController::class, 'delete']);
-Route::get('/get_branch/{id}', [branchController::class, 'getbranch']);
-Route::get('/showInvoices/{id}/{opreation?}', [InvoicesDetailsController::class, 'show']);
-Route::get('/edit/{id}', [InvoicesDetailsController::class, 'edit']);
-Route::get('/show_pay/{id}', [InvoicesDetailsController::class, 'pay']);
-Route::post('/add-attachment', [InvoicesController::class, 'addAttachment']);
-//لاستعادة المحذوفات
-Route::post('/restore', [InvoicesController::class, 'restore'])->name('restore');
-Route::post('/archive', [InvoicesController::class, 'archive'])->name('archive');
+        Route::post('/archive', [InvoicesController::class, 'archive'])->name('archive')->middleware(['permission:Archive invoice']);
+        Route::get('/edit/{id}', [InvoicesDetailsController::class, 'edit'])->middleware(['permission:Modify invoice']);
+        Route::post('/updateDetails', [InvoicesController::class, 'updateDetails'])->middleware(['permission:Change paid status']);
+        Route::post('/destroyWithTrashed', [InvoicesController::class, 'destroyWithTrashed'])->middleware(['permission:Deleted invoices']);
+        Route::post('/restore', [InvoicesController::class, 'restore'])->name('restore');
+        Route::get('/showInvoices/{id}/{opreation?}', [InvoicesDetailsController::class, 'show']);
+        Route::get('/show_pay/{id}', [InvoicesDetailsController::class, 'pay']);
 
-Route::get('/invoices_paid', [InvoicesController::class, 'invoices_paid']);
-Route::get('/invoices_unpaid', [InvoicesController::class, 'invoices_unpaid']);
-Route::get('/invoices_partially_paid', [InvoicesController::class, 'invoices_partially_paid']);
-Route::get('/archived_invoiced', [InvoicesController::class, 'archived_invoiced']);
-Route::get('/deleted_invoiced', [InvoicesController::class, 'deleted_invoiced']);
-Route::post('/destroyWithTrashed', [InvoicesController::class, 'destroyWithTrashed']);
-Route::get('/print/{id}', [InvoicesController::class, 'print_invoice']);
-Route::get('/markAsRead', [InvoicesController::class , 'markAsRead']);
+        Route::post('/delete-attachment', [InvoicesAttachmentController::class, 'delete'])->middleware(['permission:Delete Attachment']);
+        Route::post('/add-attachment', [InvoicesController::class, 'addAttachment'])->middleware(['permission:Add Attachment']);
 
+        Route::get('/print/{id}', [InvoicesController::class, 'print_invoice'])->middleware(['permission:Print invoice']);
+        Route::get('/export', [InvoicesController::class, 'export'])->middleware(['permission:Export EXCEL']);
 
-Route::get('/invoices_report', [reportController::class , 'invoices_report']);
-Route::get('/custmers_report', [reportController::class , 'custmers_report']);
-Route::get('/search_invoices_report', [reportController::class , 'search_invoices_report']);
-Route::get('/search_customers_report', [reportController::class , 'search_customers_report']);
+        Route::get('/view_file/{invoice_number}/{attachment_name}', [InvoicesAttachmentController::class, 'show']);
+        Route::get('/download_file/{invoice_number}/{attachment_name}', [InvoicesAttachmentController::class, 'download']);
+
+    });
 
 
+    Route::group(['middleware' => ['permission:Sittings']], function () {
+
+        Route::resource('/section', SectionController::class)->middleware(['permission:Sections']);
+        Route::resource('/branch', branchController::class)->middleware(['permission:Branchs']);
+
+    });
 
 
-Route::get('/view_file/{invoice_number}/{attachment_name}', [InvoicesAttachmentController::class, 'show']);
-Route::get('/download_file/{invoice_number}/{attachment_name}', [InvoicesAttachmentController::class, 'download']);
+    // Reports
+    Route::group(['middleware' => ['permission:Report']], function () {
+
+        Route::group(['middleware' => ['permission:Invoices report']], function () {
+            Route::resource('/reports', reportController::class);
+            Route::get('/invoices_report', [reportController::class, 'invoices_report']);
+            Route::get('/search_invoices_report', [reportController::class, 'search_invoices_report']);
+
+        });
+
+        Route::group(['middleware' => ['permission:Customer report']], function () {
+
+            Route::get('/custmers_report', [reportController::class, 'custmers_report']);
+            Route::get('/search_customers_report', [reportController::class, 'search_customers_report']);
+
+        });
+
+    });
 
 
-Route::get('/export', [InvoicesController::class, 'export']);
+    //Users and roles sittings
+    Route::group(['middleware' => ['permission:Users']], function () {
 
-Route::get('/search/{txt}', [InvoicesController::class, 'search']);
+        Route::resource('roles', RoleController::class)->middleware(['permission:Roles users']);
 
-// Route::group(['middleware' => ['auth']], function () {
-    Route::resource('roles', RoleController::class);
-    Route::resource('users', UserController::class);
-// });
+        Route::resource('users', UserController::class)->middleware(['permission:Users list']);
+
+    });
+
+
+    Route::get('/get_branch/{id}', [branchController::class, 'getbranch']);
+
+    Route::get('/search/{txt}', [InvoicesController::class, 'search']);
+
+    Route::get('/markAsRead', [InvoicesController::class, 'markAsRead'])->middleware(['permission:Notification']);
 
 
 });
