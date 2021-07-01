@@ -9,6 +9,13 @@ use App\Http\Requests\branchRequest;
 
 class BranchController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:Add Branch', ['only' => ['create','store']]);
+        $this->middleware('permission:Modify branch', ['only' => ['update','edit']]);
+        $this->middleware('permission:Delete Branch', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

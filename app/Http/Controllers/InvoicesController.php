@@ -18,6 +18,13 @@ use Illuminate\Support\Facades\Notification;
 
 class invoicesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:Add invoice', ['only' => ['store']]);
+        $this->middleware('permission:Delete invoice', ['only' => ['destroy']]);
+        $this->middleware('permission:Add invoice', ['only' => ['store']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

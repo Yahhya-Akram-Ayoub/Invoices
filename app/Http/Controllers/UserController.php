@@ -9,7 +9,15 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-/**
+    function __construct()
+    {
+        $this->middleware('permission:Users list', ['only' => ['index']]);
+        $this->middleware('permission:Add user', ['only' => ['create','store']]);
+        $this->middleware('permission:Delete user', ['only' => ['destroy']]);
+        $this->middleware('permission:Modify user', ['only' => ['update','edit']]);
+    }
+
+    /**
 * Display a listing of the resource.
 *
 * @return \Illuminate\Http\Response
